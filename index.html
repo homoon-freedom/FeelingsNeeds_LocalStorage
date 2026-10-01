@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>통합 마음 가이드 & 기록장</title>
+    <title>마음 가이드 & 기록장</title>
     <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
     <style>
         :root {
@@ -30,16 +30,6 @@
             --cat-neg-text: #2e7d32;               
             --cat-pre-bg: rgba(92, 107, 192, 0.2);  
             --cat-pre-text: #303f9f;               
-
-            /* 플루칙 감정바퀴 전용 색상 */
-            --p-joy-color: #FCE17A;
-            --p-trust-color: #B5D585;
-            --p-fear-color: #5C9A6C;
-            --p-surprise-color: #55A2A3;
-            --p-sadness-color: #6C8BC1;
-            --p-disgust-color: #9375A7;
-            --p-anger-color: #DD6E66;
-            --p-anticipation-color: #E89A64;
         }
 
         html, body { 
@@ -68,12 +58,6 @@
         }
         .context-label { font-weight: 800; color: var(--accent-blue); display: block; font-size: 0.75rem; margin-bottom: 6px; align-self: flex-start;}
         .context-text-display { font-weight: 600; color: #333; font-size: 0.9rem; line-height: 1.5; white-space: pre-wrap; word-break: break-all; overflow-wrap: break-word; max-height: 80px; overflow-y: auto; }
-
-        /* 서브 탭 스타일 (감정카드 내) */
-        .sub-tab-container { max-width: 440px; margin: 15px auto; padding: 0 15px; box-sizing: border-box; }
-        .sub-tab-menu { display: flex; background: #e9ecef; border-radius: 12px; padding: 4px; }
-        .sub-tab-btn { flex: 1; padding: 10px; font-size: 0.9rem; font-weight: 700; color: #6c757d; border: none; background: transparent; border-radius: 10px; cursor: pointer; transition: 0.3s; }
-        .sub-tab-btn.active { background: white; color: var(--primary-blue); box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
 
         .index-container { max-width: 1200px; margin: 15px auto; padding: 0 15px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
         .item-link { 
@@ -138,6 +122,12 @@
             font-size: 14px; background: var(--light-blue); padding: 12px; border-radius: 5px; line-height: 1.6; color: #2c3e50; font-family: 'Pretendard', sans-serif; 
             white-space: pre-wrap; word-break: break-all; overflow-wrap: break-word; overflow: hidden; 
         }
+
+        /* 2.감정찾기와 4.핵심욕구 최소 높이 조정 */
+        #step2, #step4 {
+            min-height: 150px;
+        }
+
         textarea::placeholder { color: #9bbad3; font-size: 13px; }
         .editable-list:empty::before { content: attr(data-placeholder); color: #9bbad3; font-size: 13px; pointer-events: none; white-space: pre-wrap; }
 
@@ -173,93 +163,6 @@
         .modal-close { position: absolute; top: 14px; right: 16px; width: 30px; height: 30px; background: #eee; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 18px; cursor: pointer; font-weight: bold; z-index: 5100; color: #555; }
         .modal-content .title { font-size: 1.8rem; font-weight: 950; margin-bottom: 12px; text-align: center; border-bottom: 2px solid #eee; padding-bottom: 10px; margin-top: 5px;}
         .modal-content .desc { font-size: 0.95rem; color: #555; margin-bottom: 18px; line-height: 1.6; text-align: center; font-weight: 800; word-break: keep-all; }
-
-        /* 플루칙의 감정 바퀴 전용 스타일 */
-        .p-container { max-width: 1200px; width: 100%; padding: 0 15px; box-sizing: border-box; margin: 0 auto;}
-        .p-container h2 { text-align: center; font-size: 1.2rem; border-bottom: 2px solid #ddd; padding-bottom: 10px; margin-top: 20px; margin-bottom: 20px; }
-        .spectrum-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; }
-        .p-emotion-card { background: #fff; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 6px rgba(0,0,0,0.05); display: flex; flex-direction: column; }
-        .emotion-header { padding: 15px; text-align: center; font-weight: bold; font-size: 1.1rem; display: flex; flex-direction: column; }
-        .emotion-header span.eng { font-size: 0.9rem; font-weight: normal; opacity: 0.8; margin-top: 4px; }
-        .emotion-levels { display: flex; flex-direction: column; flex-grow: 1; }
-        .level { padding: 12px 15px; text-align: center; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(255,255,255,0.2); cursor: pointer; transition: all 0.2s ease; }
-        .level:hover { filter: brightness(0.9); transform: scale(1.02); box-shadow: 0 4px 8px rgba(0,0,0,0.1); z-index: 10; }
-        .level:last-child { border-bottom: none; }
-        .level-title { font-size: 0.85rem; opacity: 0.9; pointer-events: none; }
-        .level-name { font-weight: bold; display: flex; flex-direction: column; align-items: flex-end; pointer-events: none; }
-        .level-name span { font-size: 0.8rem; font-weight: normal; }
-
-        .dyad-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 15px; }
-        .dyad-card { background: #fff; border-radius: 8px; padding: 20px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 4px rgba(0,0,0,0.05); border-left: 5px solid #ccc; cursor: pointer; transition: all 0.2s ease; }
-        .dyad-card:hover { transform: translateY(-3px); box-shadow: 0 6px 12px rgba(0,0,0,0.1); background-color: #fdfdfd; }
-        .dyad-result { font-size: 1.2rem; font-weight: bold; display: flex; flex-direction: column; pointer-events: none; }
-        .dyad-result span { font-size: 0.85rem; color: #666; font-weight: normal; }
-        .dyad-formula { display: flex; align-items: center; gap: 10px; font-size: 0.95rem; color: #555; pointer-events: none; }
-        .dot { width: 12px; height: 12px; border-radius: 50%; display: inline-block; }
-
-        .card-joy .emotion-header { background-color: var(--p-joy-color); color: #333; }
-        .card-joy .level:nth-child(1) { background-color: #F3C623; color: #333; } 
-        .card-joy .level:nth-child(2) { background-color: var(--p-joy-color); color: #333; } 
-        .card-joy .level:nth-child(3) { background-color: #FDF1B8; color: #333; } 
-        
-        .card-trust .emotion-header { background-color: var(--p-trust-color); color: #333; }
-        .card-trust .level:nth-child(1) { background-color: #8EBA55; color: #fff; }
-        .card-trust .level:nth-child(2) { background-color: var(--p-trust-color); color: #333; }
-        .card-trust .level:nth-child(3) { background-color: #D6E8B3; color: #333; }
-
-        .card-fear .emotion-header { background-color: var(--p-fear-color); color: #fff; }
-        .card-fear .level:nth-child(1) { background-color: #38704A; color: #fff; }
-        .card-fear .level:nth-child(2) { background-color: var(--p-fear-color); color: #fff; }
-        .card-fear .level:nth-child(3) { background-color: #92BE9C; color: #333; }
-
-        .card-surprise .emotion-header { background-color: var(--p-surprise-color); color: #fff; }
-        .card-surprise .level:nth-child(1) { background-color: #337A7C; color: #fff; }
-        .card-surprise .level:nth-child(2) { background-color: var(--p-surprise-color); color: #fff; }
-        .card-surprise .level:nth-child(3) { background-color: #9CC9CA; color: #333; }
-
-        .card-sadness .emotion-header { background-color: var(--p-sadness-color); color: #fff; }
-        .card-sadness .level:nth-child(1) { background-color: #4A6596; color: #fff; }
-        .card-sadness .level:nth-child(2) { background-color: var(--p-sadness-color); color: #fff; }
-        .card-sadness .level:nth-child(3) { background-color: #AABBE2; color: #333; }
-
-        .card-disgust .emotion-header { background-color: var(--p-disgust-color); color: #fff; }
-        .card-disgust .level:nth-child(1) { background-color: #6A4D7A; color: #fff; }
-        .card-disgust .level:nth-child(2) { background-color: var(--p-disgust-color); color: #fff; }
-        .card-disgust .level:nth-child(3) { background-color: #C0AED1; color: #333; }
-
-        .card-anger .emotion-header { background-color: var(--p-anger-color); color: #fff; }
-        .card-anger .level:nth-child(1) { background-color: #BA4A45; color: #fff; }
-        .card-anger .level:nth-child(2) { background-color: var(--p-anger-color); color: #fff; }
-        .card-anger .level:nth-child(3) { background-color: #EFA8A4; color: #333; }
-
-        .card-anticipation .emotion-header { background-color: var(--p-anticipation-color); color: #fff; }
-        .card-anticipation .level:nth-child(1) { background-color: #C4723E; color: #fff; }
-        .card-anticipation .level:nth-child(2) { background-color: var(--p-anticipation-color); color: #fff; }
-        .card-anticipation .level:nth-child(3) { background-color: #F2C3A0; color: #333; }
-
-        .p-modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 6000; justify-content: center; align-items: center; opacity: 0; transition: opacity 0.3s ease; }
-        .p-modal-overlay.active { display: flex; opacity: 1; }
-        .p-modal-container { background: #fff; width: 90%; max-width: 650px; max-height: 85vh; border-radius: 16px; box-shadow: 0 15px 35px rgba(0,0,0,0.2); display: flex; flex-direction: column; transform: translateY(20px); transition: transform 0.3s ease; overflow: hidden; }
-        .p-modal-overlay.active .p-modal-container { transform: translateY(0); }
-        .p-modal-header { padding: 25px 30px; color: #fff; display: flex; justify-content: space-between; align-items: center; }
-        .p-modal-title { margin: 0; font-size: 1.5rem; display: flex; align-items: baseline; gap: 10px; }
-        .p-modal-title span.eng { font-size: 1.1rem; opacity: 0.8; font-weight: normal; }
-        .p-close-btn { background: none; border: none; color: inherit; font-size: 1.8rem; cursor: pointer; opacity: 0.8; transition: opacity 0.2s; }
-        .p-close-btn:hover { opacity: 1; }
-        .p-modal-body { padding: 30px; overflow-y: auto; font-size: 1.05rem; line-height: 1.7; color: #333; }
-        .p-modal-body h3 { margin-top: 0; color: #2c3e50; border-bottom: 2px solid #eee; padding-bottom: 8px; margin-bottom: 15px; font-size: 1.2rem; }
-        .p-modal-body p { margin-bottom: 20px; }
-        .p-modal-body ul { padding-left: 20px; margin-bottom: 20px; }
-        .p-modal-body li { margin-bottom: 8px; }
-        .p-tag { display: inline-block; background: #eee; padding: 4px 10px; border-radius: 20px; font-size: 0.85rem; margin-right: 5px; margin-bottom: 15px; color: #555; }
-        .p-related-tags-container { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 20px; }
-        .p-related-tag { display: inline-block; background: #f8f9fa; border: 1px solid #ced4da; padding: 5px 12px; border-radius: 15px; font-size: 0.95rem; color: #212529; font-weight: 500; white-space: nowrap; transition: all 0.2s; }
-        .p-related-tag:hover { background: #e9ecef; border-color: #adb5bd; }
-        
-        #p-imageModal { display: none; position: fixed; z-index: 7000; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.9); justify-content: center; align-items: center; }
-        #p-imageModal img { max-width: 90%; max-height: 90%; border-radius: 8px; cursor: zoom-out; }
-        .p-image-container img { cursor: pointer; transition: transform 0.2s; }
-        .p-image-container img:hover { transform: scale(1.03); }
     </style>
 </head>
 <body>
@@ -273,7 +176,7 @@
 
 <nav class="nav-container">
     <div class="tab-menu">
-        <button class="tab-btn active" id="btn-record" onclick="showSection('record')">마음 관찰 기록</button>
+        <button class="tab-btn active" id="btn-record" onclick="showSection('record')">마음 기록</button>
         <button class="tab-btn" id="btn-emotions" onclick="showSection('emotions')">감정 카드</button>
         <button class="tab-btn" id="btn-judgment" onclick="showSection('judgment')">판단 카드</button>
         <button class="tab-btn" id="btn-needs" onclick="showSection('needs')">욕구 카드</button>
@@ -283,157 +186,8 @@
 <section id="emotions-section" class="content-section">
     <div class="context-guide"><span class="context-label">지금 관찰 중인 사건</span><div id="context-display-emotions" class="context-text-display">기록장에서 사건을 먼저 입력해 보세요.</div></div>
     
-    <div class="sub-tab-container">
-        <div class="sub-tab-menu">
-            <button class="sub-tab-btn active" id="btn-sub-cards" onclick="showSubEmotion('cards')">감정 카드 목록</button>
-            <button class="sub-tab-btn" id="btn-sub-plutchik" onclick="showSubEmotion('plutchik')">플루칙의 감정 바퀴</button>
-        </div>
-    </div>
-
-    <div id="sub-emotion-cards">
-        <div class="index-container" id="emotions-index"></div>
-        <div class="grid" id="emotions-grid"></div>
-    </div>
-
-    <div id="sub-emotion-plutchik" style="display: none; padding-bottom: 40px;">
-        <h1 style="text-align: center; font-size: 1.6rem; margin-top: 10px;">플루칙의 감정 바퀴</h1>
-        <p style="text-align: center; color: #666; font-size: 1rem; margin-top: -10px; margin-bottom: 20px;">Plutchik's Wheel of Emotions</p>
-        
-        <div class="p-image-container" style="text-align: center; margin: 20px 0;" title="클릭해서 크게 보기">
-            <img src="plutchick.jpeg" alt="플루칙의 감정 바퀴" style="max-width: 50%; height: auto; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);" onclick="document.getElementById('p-imageModal').style.display='flex'">
-        </div>
-
-        <div class="p-container">
-            <h2>8가지 기본 감정 스펙트럼(심화→기본→약화)</h2>
-            <div class="spectrum-grid">
-                <div class="p-emotion-card card-joy">
-                    <div class="emotion-header">기쁨 <span class="eng">Joy</span></div>
-                    <div class="emotion-levels">
-                        <div class="level" data-emotion="ecstasy" data-color="#F3C623" data-text="#333"><span class="level-title">강한 감정 (중심)</span><span class="level-name">황홀 <span>Ecstasy</span></span></div>
-                        <div class="level" data-emotion="joy" data-color="#FCE17A" data-text="#333"><span class="level-title">기본 감정 (중간)</span><span class="level-name">기쁨 <span>Joy</span></span></div>
-                        <div class="level" data-emotion="serenity" data-color="#FDF1B8" data-text="#333"><span class="level-title">약한 감정 (외곽)</span><span class="level-name">평온 <span>Serenity</span></span></div>
-                    </div>
-                </div>
-
-                <div class="p-emotion-card card-trust">
-                    <div class="emotion-header">신뢰 <span class="eng">Trust</span></div>
-                    <div class="emotion-levels">
-                        <div class="level" data-emotion="admiration" data-color="#8EBA55" data-text="#fff"><span class="level-title">강한 감정 (중심)</span><span class="level-name">경애 <span>Admiration</span></span></div>
-                        <div class="level" data-emotion="trust" data-color="#B5D585" data-text="#333"><span class="level-title">기본 감정 (중간)</span><span class="level-name">신뢰 <span>Trust</span></span></div>
-                        <div class="level" data-emotion="acceptance" data-color="#D6E8B3" data-text="#333"><span class="level-title">약한 감정 (외곽)</span><span class="level-name">수용 <span>Acceptance</span></span></div>
-                    </div>
-                </div>
-
-                <div class="p-emotion-card card-fear">
-                    <div class="emotion-header">두려움 <span class="eng">Fear</span></div>
-                    <div class="emotion-levels">
-                        <div class="level" data-emotion="terror" data-color="#38704A" data-text="#fff"><span class="level-title">강한 감정 (중심)</span><span class="level-name">공포 <span>Terror</span></span></div>
-                        <div class="level" data-emotion="fear" data-color="#5C9A6C" data-text="#fff"><span class="level-title">기본 감정 (중간)</span><span class="level-name">두려움 <span>Fear</span></span></div>
-                        <div class="level" data-emotion="apprehension" data-color="#92BE9C" data-text="#333"><span class="level-title">약한 감정 (외곽)</span><span class="level-name">불안 <span>Apprehension</span></span></div>
-                    </div>
-                </div>
-
-                <div class="p-emotion-card card-surprise">
-                    <div class="emotion-header">놀람 <span class="eng">Surprise</span></div>
-                    <div class="emotion-levels">
-                        <div class="level" data-emotion="amazement" data-color="#337A7C" data-text="#fff"><span class="level-title">강한 감정 (중심)</span><span class="level-name">경탄 <span>Amazement</span></span></div>
-                        <div class="level" data-emotion="surprise" data-color="#55A2A3" data-text="#fff"><span class="level-title">기본 감정 (중간)</span><span class="level-name">놀람 <span>Surprise</span></span></div>
-                        <div class="level" data-emotion="distraction" data-color="#9CC9CA" data-text="#333"><span class="level-title">약한 감정 (외곽)</span><span class="level-name">동요 <span>Distraction</span></span></div>
-                    </div>
-                </div>
-
-                <div class="p-emotion-card card-sadness">
-                    <div class="emotion-header">슬픔 <span class="eng">Sadness</span></div>
-                    <div class="emotion-levels">
-                        <div class="level" data-emotion="grief" data-color="#4A6596" data-text="#fff"><span class="level-title">강한 감정 (중심)</span><span class="level-name">비탄 <span>Grief</span></span></div>
-                        <div class="level" data-emotion="sadness" data-color="#6C8BC1" data-text="#fff"><span class="level-title">기본 감정 (중간)</span><span class="level-name">슬픔 <span>Sadness</span></span></div>
-                        <div class="level" data-emotion="pensiveness" data-color="#AABBE2" data-text="#333"><span class="level-title">약한 감정 (외곽)</span><span class="level-name">감상적 <span>Pensiveness</span></span></div>
-                    </div>
-                </div>
-
-                <div class="p-emotion-card card-disgust">
-                    <div class="emotion-header">혐오 <span class="eng">Disgust</span></div>
-                    <div class="emotion-levels">
-                        <div class="level" data-emotion="loathing" data-color="#6A4D7A" data-text="#fff"><span class="level-title">강한 감정 (중심)</span><span class="level-name">증오 <span>Loathing</span></span></div>
-                        <div class="level" data-emotion="disgust" data-color="#9375A7" data-text="#fff"><span class="level-title">기본 감정 (중간)</span><span class="level-name">혐오 <span>Disgust</span></span></div>
-                        <div class="level" data-emotion="boredom" data-color="#C0AED1" data-text="#333"><span class="level-title">약한 감정 (외곽)</span><span class="level-name">권태 <span>Boredom</span></span></div>
-                    </div>
-                </div>
-
-                <div class="p-emotion-card card-anger">
-                    <div class="emotion-header">분노 <span class="eng">Anger</span></div>
-                    <div class="emotion-levels">
-                        <div class="level" data-emotion="rage" data-color="#BA4A45" data-text="#fff"><span class="level-title">강한 감정 (중심)</span><span class="level-name">격노 <span>Rage</span></span></div>
-                        <div class="level" data-emotion="anger" data-color="#DD6E66" data-text="#fff"><span class="level-title">기본 감정 (중간)</span><span class="level-name">분노 <span>Anger</span></span></div>
-                        <div class="level" data-emotion="annoyance" data-color="#EFA8A4" data-text="#333"><span class="level-title">약한 감정 (외곽)</span><span class="level-name">짜증 <span>Annoyance</span></span></div>
-                    </div>
-                </div>
-
-                <div class="p-emotion-card card-anticipation">
-                    <div class="emotion-header">기대 <span class="eng">Anticipation</span></div>
-                    <div class="emotion-levels">
-                        <div class="level" data-emotion="vigilance" data-color="#C4723E" data-text="#fff"><span class="level-title">강한 감정 (중심)</span><span class="level-name">경계 <span>Vigilance</span></span></div>
-                        <div class="level" data-emotion="anticipation" data-color="#E89A64" data-text="#fff"><span class="level-title">기본 감정 (중간)</span><span class="level-name">기대 <span>Anticipation</span></span></div>
-                        <div class="level" data-emotion="interest" data-color="#F2C3A0" data-text="#333"><span class="level-title">약한 감정 (외곽)</span><span class="level-name">관심 <span>Interest</span></span></div>
-                    </div>
-                </div>
-            </div>
-
-            <h2>혼합 감정(두 가지 기본감정)</h2>
-            <div class="dyad-grid">
-                <div class="dyad-card" data-emotion="optimism" data-color="#E89A64" data-text="#fff" style="border-color: #E89A64;">
-                    <div class="dyad-result">낙관 <span>Optimism</span></div>
-                    <div class="dyad-formula">
-                        <span class="dot" style="background: var(--p-anticipation-color);"></span> 기대 + 기쁨 <span class="dot" style="background: var(--p-joy-color);"></span>
-                    </div>
-                </div>
-
-                <div class="dyad-card" data-emotion="aggressiveness" data-color="#E89A64" data-text="#fff" style="border-color: #E89A64;">
-                    <div class="dyad-result">공격성 <span>Aggressiveness</span></div>
-                    <div class="dyad-formula">
-                        <span class="dot" style="background: var(--p-anger-color);"></span> 분노 + 기대 <span class="dot" style="background: var(--p-anticipation-color);"></span>
-                    </div>
-                </div>
-
-                <div class="dyad-card" data-emotion="contempt" data-color="#DD6E66" data-text="#fff" style="border-color: #DD6E66;">
-                    <div class="dyad-result">경멸 <span>Contempt</span></div>
-                    <div class="dyad-formula">
-                        <span class="dot" style="background: var(--p-disgust-color);"></span> 혐오 + 분노 <span class="dot" style="background: var(--p-anger-color);"></span>
-                    </div>
-                </div>
-                <div class="dyad-card" data-emotion="remorse" data-color="#9375A7" data-text="#fff" style="border-color: #9375A7;">
-                    <div class="dyad-result">후회 <span>Remorse</span></div>
-                    <div class="dyad-formula">
-                        <span class="dot" style="background: var(--p-sadness-color);"></span> 슬픔 + 혐오 <span class="dot" style="background: var(--p-disgust-color);"></span>
-                    </div>
-                </div>
-                <div class="dyad-card" data-emotion="disapproval" data-color="#6C8BC1" data-text="#fff" style="border-color: #6C8BC1;">
-                    <div class="dyad-result">실망 <span>Disapproval</span></div>
-                    <div class="dyad-formula">
-                        <span class="dot" style="background: var(--p-surprise-color);"></span> 놀람 + 슬픔 <span class="dot" style="background: var(--p-sadness-color);"></span>
-                    </div>
-                </div>
-                <div class="dyad-card" data-emotion="awe" data-color="#55A2A3" data-text="#fff" style="border-color: #55A2A3;">
-                    <div class="dyad-result">외경 <span>Awe</span></div>
-                    <div class="dyad-formula">
-                        <span class="dot" style="background: var(--p-fear-color);"></span> 두려움 + 놀람 <span class="dot" style="background: var(--p-surprise-color);"></span>
-                    </div>
-                </div>
-                <div class="dyad-card" data-emotion="submission" data-color="#5C9A6C" data-text="#fff" style="border-color: #5C9A6C;">
-                    <div class="dyad-result">복종 <span>Submission</span></div>
-                    <div class="dyad-formula">
-                        <span class="dot" style="background: var(--p-trust-color);"></span> 신뢰 + 두려움 <span class="dot" style="background: var(--p-fear-color);"></span>
-                    </div>
-                </div>
-                <div class="dyad-card" data-emotion="love" data-color="#B5D585" data-text="#333" style="border-color: #B5D585;">
-                    <div class="dyad-result">사랑 <span>Love</span></div>
-                    <div class="dyad-formula">
-                        <span class="dot" style="background: var(--p-joy-color);"></span> 기쁨 + 신뢰 <span class="dot" style="background: var(--p-trust-color);"></span>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
+    <div class="index-container" id="emotions-index"></div>
+    <div class="grid" id="emotions-grid"></div>
 </section>
 
 <section id="judgment-section" class="content-section">
@@ -537,20 +291,6 @@
 
 <div id="previewBox"><img id="previewImg"><button id="closeBtn" onclick="closePreview()">닫기</button></div>
 
-<div class="p-modal-overlay" id="p-emotionModal">
-    <div class="p-modal-container">
-        <div class="p-modal-header" id="p-modalHeader">
-            <h2 class="p-modal-title" id="p-modalTitle">감정 <span>Emotion</span></h2>
-            <button class="p-close-btn" id="p-closeModal">&times;</button>
-        </div>
-        <div class="p-modal-body" id="p-modalBody"></div>
-    </div>
-</div>
-
-<div id="p-imageModal" onclick="this.style.display='none'">
-    <img src="plutchick.jpeg" alt="확대된 이미지">
-</div>
-
 <script>
 const needsData = [
     { name: "효율성", cat: "cat-auto", desc: "최소한의 자원과 에너지로 최대한의 결실을 얻고, 질서 있게 일을 처리하고 싶은 욕구", sat: ["홀가분하다", "만족하다"], unsat: ["답답하다", "피곤하다"], action: "우선순위를 정하고 불필요한 단계를 줄여보세요." },
@@ -641,7 +381,7 @@ const judgmentData = [
   { name: "무식하다", cat: "cat-low", desc: "상대방의 지식이나 상식이 부족하다고 판단하여 깎아내림", sit: "상대방이 기본적인 것을 모르거나 비논리적인 주장을 고집할 때", body: "한숨을 깊게 쉬거나 어이없다는 듯 헛웃음을 지음", aff: "사람마다 경험과 지식의 분야가 다름을 인정하고 존중하기" },
   { name: "잔망스럽다", cat: "cat-low", desc: "상대방의 행동이나 말씨가 얄밉고 가벼우며 교묘하다고 느낌", sit: "상황에 맞지 않게 촐싹거리거나 얄미운 변명으로 상황을 모면하려 할 때", body: "눈살을 찌푸리거나 차가운 시선으로 응시함", aff: "상대의 가벼운 태도에 휘둘리지 않고 내 마음의 중심을 지키기" },
   { name: "미숙하다", cat: "cat-low", desc: "경험의 부재로 인해 발생하는 실수를 무능함으로 치부함", sit: "사소한 업무 실수를 할 때", body: "비웃음 섞인 미소와 함께 경멸적인 태도", aff: "경험은 시행착오를 통해 쌓이는 것임을 인정하기" },
-  { name: "오만하다", cat: "cat-low", desc: "상대가 자신의 성취를 지나치게 과시하여 눈살이 찌푸려짐", sit: "상대가 지속적으로 잘난 척을 할 때", body: "방어적으로 팔짱을 끼고 몸을 뒤로 뺌", aff: "상대의 오만함 뒤에 숨겨진 불안을 들여다보기" },
+  { name: "오만하다", cat: "cat-low", desc: "상대가 자신의 성취를 지나치게 과시하여 눈살이 찌푸려짐", sit: "상대가 지속적으로 잘난 척을 할 때", body: "방어적으로 팔짱을 끼고 몸을 뒤로 뺌", aff: "상대의 오만함 뒤에 숨겨진 불안을 들 들여다보기" },
   { name: "속물적이다", cat: "cat-low", desc: "상대가 정신적 가치보다 물질적 이익만을 우선시한다고 느낌", sit: "이익 앞에서 태도가 180도 바뀔 때", body: "비난 섞인 시선과 차가운 침묵", aff: "생존을 위한 치열한 현실 감각을 이해해보려 노력하기" },
   { name: "가식적이다", cat: "cat-low", desc: "상대의 태도가 진심이 아닌 연기처럼 느껴짐", sit: "상대방의 눈빛과 말에 온도 차이가 느껴지고, 가식적인 웃음이나 칭찬이 반복될 때", body: "상대에게 정서적 거리감을 두며 무의식적으로 팔짱을 끼거나 뒤로 물러남", aff: "상대방이 가면 뒤에 숨겨둔 진짜 마음을 읽어내어, 그가 진정으로 보호받고 인정받고 싶은 욕구를 헤아리기" },
   { name: "꼴사납다", cat: "cat-low", desc: "상대방의 행동이나 태도, 겉모습 등이 보기에 흉하거나 몹시 거슬린다고 평가함", sit: "분수에 맞지 않게 허세를 부리거나, 눈치 없이 무례한 행동을 뻔뻔하게 할 때", body: "시선을 회피하거나 미간을 찌푸리며 노골적으로 불쾌한 기색을 드러냄", aff: "타인의 볼썽사나운 모습에 내 감정을 소모하기보다 마음의 평온을 먼저 돌보기" },
@@ -733,7 +473,7 @@ const emotionsData = [
 	{ name: "감격스럽다", cat: "cat-joy", desc: "기대 이상의 큰 기쁨이나 벅찬 상황을 마주하여 마음이 강렬하게 벅차오르는 느낌", sit: "오랜 노력 끝에 큰 성취를 이루거나 간절히 바라던 일이 이루어졌을 때", body: "심장 박동이 빨라지고 눈시울이 붉어지며 온몸에 찌릿한 전율이 흐르는 느낌", aff: "내게 찾아온 이 벅찬 순간을 온전히 누리며 깊이 감사합니다." },
     { name: "만족하다", cat: "cat-joy", desc: "모자람 없이 마음에 흡족하여 모나지 않고 있는 그대로를 긍정하는 여유", sit: "몰두한 일을 마친 뒤 쉴 때", body: "몸의 모든 근욕이 이완되고 미각이나 후각이 예민해짐", aff: "나는 이미 충분하며 지금 이대로 만족합니다." },
     { name: "든든하다", cat: "cat-joy", desc: "뒤를 받쳐주는 신뢰나 지지가 있음을 확인하여 마음이 굳건하고 강인해진 상태", sit: "나를 믿어주는 사람의 격려를 받았을 때", body: "척추가 곧게 펴지는 느낌과 함께 아랫배에 힘이 들어감", aff: "소중한 존재들이 나를 지켜줍니다." },
-    { name: "자랑스럽다", cat: "cat-joy", desc: "스스로 이뤄낸 성취나 대상의 가치를 대견하고 떳떳하게 여기는 마음", sit: "어려운 도전을 끝내거나 성장을 볼 때", body: "어깨가 펴지고 고개가 들리며 심장이 힘차게 뜀", aff: "나는 나의 노력을 진심으로 자랑스러워합니다." },
+    { name: "자랑스럽다", cat: "cat-joy", desc: "스스로 이뤄낸 성취나 대상의 가치를 대견하고 떳떳하게 여기는 마음", sit: "어려운 도전을 끝내거나 성장을 볼 때", body: "어깨가 펴지고 고개가 들리며 심장이 힘차게  파", aff: "나는 나의 노력을 진심으로 자랑스러워합니다." },
     { name: "편안하다", cat: "cat-joy", desc: "어떠한 걱정이나 얽매임이 없이 몸과 마음의 긴장이 풀리고 안정을 되찾은 상태", sit: "따뜻한 차를 마시며 쉴 때", body: "눈꺼풀이 가벼워지고 손끝과 발끝까지 이완됨", aff: "나는 모든 긴장을 내려놓고 평온에 머눕니다." },
     { name: "뿌듯하다", cat: "cat-joy", desc: "성실한 노력의 결과로 가슴이 벅차오르고 내면이 가득 채워지는 듯한 성취감", sit: "하루의 할 일을 성실히 마친 순간", body: "가슴 상부가 넓게 확장되는 느낌과 가벼운 고양감", aff: "성실하게 채워온 나의 시간이 자랑스럽습니다." },
     { name: "기대하다", cat: "cat-joy", desc: "앞으로 일어날 긍정적인 변화나 만남을 상상하며 마음속에 샘솟는 활기", sit: "새로운 도전이나 기다리던 만남 전", body: "몸이 앞으로 기울어지고 눈빛이 반짝이며 에너지가 상승함", aff: "찾아올 멋진 미래를 설레며 기다립니다." },
@@ -916,13 +656,6 @@ function showSection(type) {
     getEl('context-display-emotions').innerText = step1Val || "기록장에서 사건을 먼저 입력해 보세요.";
     getEl('context-display-needs').innerText = step1Val || "기록장에서 사건을 먼저 입력해 보세요.";
     getEl('context-display-judgment').innerText = step1Val || "기록장에서 사건을 먼저 입력해 보세요.";
-}
-
-function showSubEmotion(type) {
-    getEl('btn-sub-cards').classList.remove('active'); getEl('btn-sub-plutchik').classList.remove('active');
-    getEl('sub-emotion-cards').style.display = 'none'; getEl('sub-emotion-plutchik').style.display = 'none';
-    if(type === 'cards') { getEl('btn-sub-cards').classList.add('active'); getEl('sub-emotion-cards').style.display = 'block'; }
-    else { getEl('btn-sub-plutchik').classList.add('active'); getEl('sub-emotion-plutchik').style.display = 'block'; }
 }
 
 function updateContextDisplay(val) {
