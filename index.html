@@ -7,133 +7,118 @@
     <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
     <style>
         :root {
-            /* 감정,욕구 카드의 카테고리 색상 */
             --meaning-core: #ffcc80; --connection-core: #f48fb1; --autonomy-core: #90cead;
             --wellbeing-core: #81d4fa; --peace-core: #b39ddb;
             --joy-core: #fff176; --love-core: #f06292; --sadness-core: #64b5f6;
             --anxiety-core: #ba68c8; --anger-core: #ef5350;
-            --meaning-bg: rgba(255, 204, 128, 0.7); 
-			--connection-bg: rgba(244, 143, 177, 0.8); 
-			--autonomy-bg: rgba(144, 206, 173, 0.7);
-            --wellbeing-bg: rgba(129, 212, 250, 0.7); 
-			--peace-bg: rgba(179, 157, 219, 0.8);
-            --joy-bg: rgba(255, 241, 118, 0.7); 
-			--love-bg: rgba(240, 98, 146, 0.8); 
-			--sadness-bg: rgba(100, 181, 246, 0.8);
-            --anxiety-bg: rgba(186, 104, 200, 0.8); 
-			--anger-bg: rgba(239, 83, 80, 0.8);
             
-            /* 기록장 색상 */
-            --primary-blue: #003366; 
-			--accent-blue: #007AFF; 
-			--light-blue: #EBF4FF;
-            --danger-red: #FF3B30; 
-			--bg-gray: #F2F5F8;
-            --text: #333; 
-			--bg: #f8f9fa;
+            --meaning-bg: rgba(255, 204, 128, 0.7); --connection-bg: rgba(244, 143, 177, 0.8); --autonomy-bg: rgba(144, 206, 173, 0.7);
+            --wellbeing-bg: rgba(129, 212, 250, 0.7); --peace-bg: rgba(179, 157, 219, 0.8); --joy-bg: rgba(255, 241, 118, 0.7); 
+            --love-bg: rgba(240, 98, 146, 0.8); --sadness-bg: rgba(100, 181, 246, 0.8); --anxiety-bg: rgba(186, 104, 200, 0.8); --anger-bg: rgba(239, 83, 80, 0.8);
+            
+            --primary-blue: #003366; --accent-blue: #007AFF; --light-blue: #EBF4FF;
+            --danger-red: #FF3B30; --bg-gray: #F2F5F8; --text: #333; --bg: #f8f9fa;
+
+            /* 판단 카드 색상 추가 */
+            --cat-low-bg: rgba(239, 83, 80, 0.2);  
+            --cat-low-text: #c62828;              
+            --cat-irr-bg: rgba(158, 158, 158, 0.2); 
+            --cat-irr-text: #424242;               
+            --cat-res-bg: rgba(255, 167, 38, 0.2);  
+            --cat-res-text: #ef6c00;               
+            --cat-neg-bg: rgba(76, 175, 80, 0.2);  
+            --cat-neg-text: #2e7d32;               
+            --cat-pre-bg: rgba(92, 107, 192, 0.2);  
+            --cat-pre-text: #303f9f;               
+
+            /* 플루칙 감정바퀴 전용 색상 */
+            --p-joy-color: #FCE17A;
+            --p-trust-color: #B5D585;
+            --p-fear-color: #5C9A6C;
+            --p-surprise-color: #55A2A3;
+            --p-sadness-color: #6C8BC1;
+            --p-disgust-color: #9375A7;
+            --p-anger-color: #DD6E66;
+            --p-anticipation-color: #E89A64;
         }
-        
+
         html, body { 
             height: 100%; margin: 0; padding: 0; overflow: hidden; 
             font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, Roboto, sans-serif;
-            background: var(--bg-gray); color: var(--text); 
-            line-height: 1.5; word-break: keep-all;
+            background: var(--bg-gray); color: var(--text); line-height: 1.5; word-break: keep-all;
         }
-
         body { display: flex; flex-direction: column; }
 
-        /* 네비게이션 고정 */
-        .nav-container {
-            flex-shrink: 0; background: white; border-bottom: 2px solid #eee;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.05); z-index: 2000;
-        }
+        .nav-container { flex-shrink: 0; background: white; border-bottom: 2px solid #eee; box-shadow: 0 2px 10px rgba(0,0,0,0.05); z-index: 2000; }
         .tab-menu { display: flex; justify-content: center; max-width: 1200px; margin: 0 auto; }
         .tab-btn {
             flex: 1; padding: 15px 5px; font-size: 0.95rem; font-weight: 800; color: #999;
-            cursor: pointer; border: none; background: none; transition: 0.3s;
-            position: relative; text-align: center;
+            cursor: pointer; border: none; background: none; transition: 0.3s; position: relative; text-align: center;
         }
         .tab-btn.active { color: var(--accent-blue); }
-        .tab-btn.active::after {
-            content: ''; position: absolute; bottom: -2px; left: 0; width: 100%;
-            height: 4px; background: var(--accent-blue);
-        }
+        .tab-btn.active::after { content: ''; position: absolute; bottom: -2px; left: 0; width: 100%; height: 4px; background: var(--accent-blue); }
 
-        /* 메인 콘텐츠 영역 */
-        .content-section { 
-            display: none; flex: 1; overflow-y: auto; 
-            -webkit-overflow-scrolling: touch; padding-bottom: 120px; 
-        }
+        .content-section { display: none; flex: 1; overflow-y: auto; -webkit-overflow-scrolling: touch; padding-bottom: 120px; }
         .content-section.active { display: block; }
 
-        header { padding: 25px 20px 10px; text-align: center; background: white; }
-        h1 { margin: 0; font-size: 1.5rem; font-weight: 800; color: var(--primary-blue); }
-        .subtitle { color: #666; font-size: 0.85rem; margin-top: 5px; }
-
         .context-guide {
-            position: sticky; top: 0; z-index: 1000;
-            max-width: 1200px; margin: 0 auto; padding: 12px 15px;
-            background: rgba(255, 255, 255, 0.96);
-            border-left: 2px solid var(--accent-blue);
-            border-bottom: 1px solid #eee;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
-            backdrop-filter: blur(8px);
-            box-sizing: border-box;
+            position: sticky; top: 0; z-index: 1000; max-width: 1200px; margin: 0 auto; padding: 12px 15px;
+            background: rgba(255, 255, 255, 0.96); border-left: 2px solid var(--accent-blue); border-bottom: 1px solid #eee;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08); backdrop-filter: blur(8px); box-sizing: border-box;
         }
         .context-label { font-weight: 800; color: var(--accent-blue); display: block; font-size: 0.75rem; margin-bottom: 6px; align-self: flex-start;}
-        .context-text-display { 
-            font-weight: 600; color: #333; font-size: 0.9rem; line-height: 1.5;
-            white-space: pre-wrap; word-break: break-all; overflow-wrap: break-word;
-            max-height: 80px; overflow-y: auto; 
-        }
+        .context-text-display { font-weight: 600; color: #333; font-size: 0.9rem; line-height: 1.5; white-space: pre-wrap; word-break: break-all; overflow-wrap: break-word; max-height: 80px; overflow-y: auto; }
 
-        .index-container { 
-            max-width: 1200px; margin: 15px auto; padding: 0 15px; 
-            display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; 
-        }
+        /* 서브 탭 스타일 (감정카드 내) */
+        .sub-tab-container { max-width: 440px; margin: 15px auto; padding: 0 15px; box-sizing: border-box; }
+        .sub-tab-menu { display: flex; background: #e9ecef; border-radius: 12px; padding: 4px; }
+        .sub-tab-btn { flex: 1; padding: 10px; font-size: 0.9rem; font-weight: 700; color: #6c757d; border: none; background: transparent; border-radius: 10px; cursor: pointer; transition: 0.3s; }
+        .sub-tab-btn.active { background: white; color: var(--primary-blue); box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
+
+        .index-container { max-width: 1200px; margin: 15px auto; padding: 0 15px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
         .item-link { 
-            height: 42px; display: flex; align-items: center; justify-content: center; 
-            border-radius: 8px; cursor: pointer; font-size: 1.1rem; font-weight: 700; 
-            border: 1px solid rgba(0,0,0,0.03); text-align: center; transition: 0.2s; padding: 0 4px;
+            height: 42px; display: flex; align-items: center; justify-content: center; border-radius: 8px; cursor: pointer; font-size: 1rem; font-weight: 700; 
+            border: 1px solid rgba(0,0,0,0.05); text-align: center; transition: 0.2s; padding: 0 4px; box-shadow: 0 2px 4px rgba(0,0,0,0.02);
         }
+        .item-link:active { transform: scale(0.96); opacity: 0.9; }
+
+        .link-meaning { background-color: var(--meaning-bg); color: #5c3a00; }
+        .link-conn { background-color: var(--connection-bg); color: #fff; text-shadow: 0 1px 2px rgba(0,0,0,0.2); }
+        .link-auto { background-color: var(--autonomy-bg); color: #1b4332; }
+        .link-well { background-color: var(--wellbeing-bg); color: #0b3c5d; }
+        .link-peace { background-color: var(--peace-bg); color: #fff; text-shadow: 0 1px 2px rgba(0,0,0,0.2); }
+        .link-joy { background-color: var(--joy-bg); color: #534c00; }
+        .link-love { background-color: var(--love-bg); color: #fff; text-shadow: 0 1px 2px rgba(0,0,0,0.2); }
+        .link-sad { background-color: var(--sadness-bg); color: #fff; text-shadow: 0 1px 2px rgba(0,0,0,0.2); }
+        .link-anx { background-color: var(--anxiety-bg); color: #fff; text-shadow: 0 1px 2px rgba(0,0,0,0.2); }
+        .link-ang { background-color: var(--anger-bg); color: #fff; text-shadow: 0 1px 2px rgba(0,0,0,0.2); }
+
+        .link-low { background-color: var(--cat-low-bg); color: var(--cat-low-text); border: 1px solid var(--cat-low-text); }
+        .link-irr { background-color: var(--cat-irr-bg); color: var(--cat-irr-text); border: 1px solid var(--cat-irr-text); }
+        .link-res { background-color: var(--cat-res-bg); color: var(--cat-res-text); border: 1px solid var(--cat-res-text); }
+        .link-neg { background-color: var(--cat-neg-bg); color: var(--cat-neg-text); border: 1px solid var(--cat-neg-text); }
+        .link-pre { background-color: var(--cat-pre-bg); color: var(--cat-pre-text); border: 1px solid var(--cat-pre-text); }
 
         .grid { display: grid; grid-template-columns: 1fr; max-width: 440px; margin: 15px auto; padding: 0 15px; gap: 20px; }
-        .card { perspective: 2000px; height: 400px; cursor: pointer; position: relative; scroll-margin-bottom: 50px; } 
-        .card-inner { position: relative; width: 100%; height: 100%; transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1); transform-style: preserve-3d; border-radius: 20px; box-shadow: 0 8px 20px rgba(0,0,0,0.06); }
-        .card.is-flipped .card-inner { transform: rotateY(180deg); }
-        .front, .back { position: absolute; width: 100%; height: 100%; backface-visibility: hidden; display: flex; flex-direction: column; padding: 24px; border-radius: 20px; box-sizing: border-box; border: 2px solid transparent; }
-        .back { transform: rotateY(180deg); background-color: white !important; overflow-y: auto; }
-        .front { justify-content: center; align-items: center; text-align: center; }
         
-        .front .title { font-size: 1.8rem; font-weight: 900; margin-bottom: 10px; color: #222; }
-        .front .desc { font-size: 0.95rem; font-weight: 600; color: #444; }
-        .back .title { font-size: 2.1rem; font-weight: 950; margin-bottom: 15px; color: #222; padding-bottom: 10px; border-bottom: 2px solid #e0e0e0; width: 100%; text-align: center; }
-
         .section-label { font-size: 0.75rem; font-weight: 800; color: #aaa; text-transform: uppercase; margin-top: 12px; display: block; }
         .content-text, .body-status, .affirmation-box { font-size: 0.92rem; color: #444; margin-bottom: 8px; line-height: 1.6; font-weight: 800;}
         .emotion-tag { padding: 4px 10px; border-radius: 6px; font-size: 0.8rem; font-weight: 700; margin: 4px; display: inline-block; cursor: pointer; }
         .tag-sat { background: #e8f5e9; color: #4caf50; }
         .tag-unsat { background: #ffebee; color: #f44336; }
         .action-box { margin-top: auto; padding: 12px; border-radius: 10px; font-size: 0.85rem; background: #f0f7ff; border: 1px dashed var(--accent-blue); color: #0056b3; font-weight: 600; margin-bottom: 10px; }
-
+        
         .add-to-record-btn {
-            padding: 12px; width: 100%; background: var(--accent-blue); color: white;
-            border: none; border-radius: 12px; font-weight: 800; font-size: 0.9rem;
-            cursor: pointer; transition: 0.2s; display: flex; align-items: center; justify-content: center; gap: 5px;
-            box-shadow: 0 4px 10px rgba(0, 122, 255, 0.2); margin-top: 10px;
+            padding: 12px; width: 100%; background: var(--accent-blue); color: white; border: none; border-radius: 12px; font-weight: 800; font-size: 0.9rem;
+            cursor: pointer; transition: 0.2s; display: flex; align-items: center; justify-content: center; gap: 5px; box-shadow: 0 4px 10px rgba(0, 122, 255, 0.2); margin-top: 10px;
         }
-
-        /* 기록장 스타일 */
+        
         .admin-section { background: white; margin: 15px 15px 15px; padding: 0; border-radius: 10px; box-shadow: 0 4px 10px rgba(0,0,0,0.04); overflow: hidden; }
         .admin-toggle-btn {
             width: 100%; padding: 12px; background: #f8f9fa; border: none; border-bottom: 1px solid #eee;
-            font-size: 13px; font-weight: 800; color: var(--primary-blue); cursor: pointer;
-            display: flex; justify-content: space-between; align-items: center;
+            font-size: 13px; font-weight: 800; color: var(--primary-blue); cursor: pointer; display: flex; justify-content: space-between; align-items: center;
         }
-		.admin-content { 
-  		  padding: 15px 15px 10px 15px; 
-		    display: none; 
-		}
+        .admin-content { padding: 15px 15px 10px 15px; display: none; }
         .admin-content.show { display: block; }
         .manage-row { display: flex; flex-direction: column; gap: 6px; margin-bottom: 5px; padding-bottom: 5px; border-bottom: 1px dashed #888; }
         .input-group { display: flex; gap: 5px; }
@@ -148,111 +133,133 @@
         .record-card-title { font-size: 15px; font-weight: 700; color: var(--primary-blue); margin-bottom: 4px; }
         .record-card-desc { font-size: 13px; color: #8E8E93; margin-bottom: 10px; line-height: 1.6; }
         
-        /* 공통 텍스트 입력 스타일 */
-	textarea, .editable-list { 
-    	width: 100%; box-sizing: border-box; 
-    	min-height: 130px; 
-    	height: auto;     
-    	border: none; outline: none; resize: none; 
-    	font-size: 14px; background: var(--light-blue); padding: 12px; border-radius: 5px; 
-    	line-height: 1.6; color: #2c3e50; font-family: 'Pretendard', sans-serif; 
-    	white-space: pre-wrap; word-break: break-all; overflow-wrap: break-word;
-    	overflow: hidden; 
-	}
+        textarea, .editable-list { 
+            width: 100%; box-sizing: border-box; min-height: 80px; height: auto; border: none; outline: none; resize: none; 
+            font-size: 14px; background: var(--light-blue); padding: 12px; border-radius: 5px; line-height: 1.6; color: #2c3e50; font-family: 'Pretendard', sans-serif; 
+            white-space: pre-wrap; word-break: break-all; overflow-wrap: break-word; overflow: hidden; 
+        }
         textarea::placeholder { color: #9bbad3; font-size: 13px; }
-        
-        .editable-list:empty::before {
-        content: attr(data-placeholder);
-        color: #9bbad3;
-        font-size: 13px;
-        pointer-events: none;
-        white-space: pre-wrap;
-	}
+        .editable-list:empty::before { content: attr(data-placeholder); color: #9bbad3; font-size: 13px; pointer-events: none; white-space: pre-wrap; }
+
+        .badge { display: inline-block; padding: 3px 8px; font-size: 0.75rem; border-radius: 6px; font-weight: bold; margin-right: 6px; }
+        .badge-other { background-color: rgba(239, 83, 80, 0.1); color: #c62828; border: 1px solid rgba(239, 83, 80, 0.3); }
+        .badge-self { background-color: rgba(0, 122, 255, 0.1); color: #0056b3; border: 1px solid rgba(0, 122, 255, 0.3); }
 
         .copy-btn {
-            margin-top: 10px; padding: 12px; width: 100%; background: #333; color: white;
-            border: none; border-radius: 10px; font-weight: 800; font-size: 0.85rem;
-            cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px;
-            transition: 0.2s;
+            margin-top: 10px; padding: 12px; width: 100%; background: #333; color: white; border: none; border-radius: 10px; font-weight: 800; font-size: 0.85rem;
+            cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; transition: 0.2s;
         }
         .copy-btn:active { transform: scale(0.98); background: #000; }
-        .btn-q1 { background: #007AFF; }
-        .btn-q2 { background: #5856D6; }
 
         .fixed-bottom-bar {
-            position: fixed; bottom: 0; left: 0; width: 100%;
-            display: flex; gap: 10px; padding: 15px 15px calc(30px + env(safe-area-inset-bottom));
-            background: rgba(242, 245, 248, 0.95);
-            backdrop-filter: blur(10px); border-top: 1px solid #eee;
-            box-sizing: border-box; z-index: 2500; align-items: center;
+            position: fixed; bottom: 0; left: 0; width: 100%; display: flex; gap: 10px; padding: 15px 15px calc(30px + env(safe-area-inset-bottom));
+            background: rgba(242, 245, 248, 0.95); backdrop-filter: blur(10px); border-top: 1px solid #eee; box-sizing: border-box; z-index: 2500; align-items: center;
         }
-        .fixed-bottom-bar button { 
-            border-radius: 10px; border: none; font-weight: 700; cursor: pointer;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.1); transition: 0.2s;
-        }
-        .btn-save-local { background: #3ecf8e; color: white; flex: 1.0; padding: 12px; font-size: 15px; }
+        .fixed-bottom-bar button { border-radius: 10px; border: none; font-weight: 700; cursor: pointer; box-shadow: 0 4px 10px rgba(0,0,0,0.1); transition: 0.2s; }
+        .btn-save-cloud { background: #3ecf8e; color: white; flex: 1.0; padding: 12px; font-size: 15px; }
         .btn-image { background: var(--primary-blue); color: white; flex: 1.0; padding: 12px; font-size: 15px; }
-        
+        .btn-refresh { padding: 12px 15px; background: #e9ecef; border: none; border-radius: 10px; cursor: pointer; font-size: 16px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
+        .btn-refresh:active { background: #dee2e6; }
+
         #previewBox { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.9); justify-content: center; align-items: center; flex-direction: column; z-index: 4000; padding: 20px; }
         #previewImg { max-width: 100%; max-height: 70%; border-radius: 10px; object-fit: contain; }
         #closeBtn { margin-top: 15px; padding: 10px 30px; background: white; border-radius: 20px; font-weight: 600; border: none; cursor: pointer; }
 
-        /* 카테고리 색상 */
-        .cat-meaning .front, .cat-meaning .back { border-color: var(--meaning-core); background-color: rgba(255, 204, 128, 0.8); }
-        .cat-conn .front, .cat-conn .back { border-color: var(--connection-core); background-color: rgba(244, 143, 177, 0.8); }
-        .cat-auto .front, .cat-auto .back { border-color: var(--autonomy-core); background-color: rgba(144, 206, 173, 0.7); }
-        .cat-well .front, .cat-well .back { border-color: var(--wellbeing-core); background-color: rgba(129, 212, 250, 0.8); }
-        .cat-peace .front, .cat-peace .back { border-color: var(--peace-core); background-color: rgba(179, 157, 219, 0.8); }
-        .cat-joy .front, .cat-joy .back { border-color: var(--joy-core); background-color: rgba(255, 241, 118, 0.7); }
-        .cat-love .front, .cat-love .back { border-color: var(--love-core); background-color: rgba(240, 98, 146, 0.8); }
-        .cat-sad .front, .cat-sad .back { border-color: var(--sadness-core); background-color: rgba(100, 181, 246, 0.8); }
-        .cat-anx .front, .cat-anx .back { border-color: var(--anxiety-core); background-color: rgba(186, 104, 200, 0.8); }
-        .cat-ang .front, .cat-ang .back { border-color: var(--anger-core); background-color: rgba(239, 83, 80, 0.8); }
-        .link-meaning { background: var(--meaning-bg); } .link-conn { background: var(--connection-bg); color: white; } .link-auto { background: var(--autonomy-bg); } .link-well { background: var(--wellbeing-bg); } .link-peace { background: var(--peace-bg); color: white; } .link-joy { background: var(--joy-bg); } .link-love { background: var(--love-bg); color: white; } .link-sad { background: var(--sadness-bg); color: white; } .link-anx { background: var(--anxiety-bg); color: white; } .link-ang { background: var(--anger-bg); color: white; }
+        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.6); backdrop-filter: blur(4px); display: none; justify-content: center; align-items: center; z-index: 5000; padding: 20px; box-sizing: border-box; }
+        .modal-content { background: white; width: 100%; max-width: 440px; max-height: 82vh; border-radius: 20px; position: relative; padding: 30px 22px 24px; overflow-y: auto; box-shadow: 0 10px 30px rgba(0,0,0,0.2); box-sizing: border-box; animation: modalPopUp 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.15); }
+        #cardModal .modal-content { max-height: 88vh; padding: 24px 22px 28px; }
 
-.modal-overlay {
-    position: fixed;
-    top: 0; left: 0; width: 100%; height: 100%;
-    background: rgba(0, 0, 0, 0.7);
-    backdrop-filter: blur(5px);
-    display: none;
-    justify-content: center;
-    align-items: center;
-    z-index: 5000;
-    padding: 20px;
-    box-sizing: border-box;
-}
+        @keyframes modalPopUp { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+        .modal-close { position: absolute; top: 14px; right: 16px; width: 30px; height: 30px; background: #eee; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 18px; cursor: pointer; font-weight: bold; z-index: 5100; color: #555; }
+        .modal-content .title { font-size: 1.8rem; font-weight: 950; margin-bottom: 12px; text-align: center; border-bottom: 2px solid #eee; padding-bottom: 10px; margin-top: 5px;}
+        .modal-content .desc { font-size: 0.95rem; color: #555; margin-bottom: 18px; line-height: 1.6; text-align: center; font-weight: 800; word-break: keep-all; }
 
-.modal-content {
-    background: white;
-    width: 100%;
-    max-width: 450px;
-    max-height: 85vh;
-    border-radius: 25px;
-    position: relative;
-    padding: 30px;
-    overflow-y: auto;
-    box-shadow: 0 20px 40px rgba(0,0,0,0.3);
-    animation: modalPop 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-}
+        /* 플루칙의 감정 바퀴 전용 스타일 */
+        .p-container { max-width: 1200px; width: 100%; padding: 0 15px; box-sizing: border-box; margin: 0 auto;}
+        .p-container h2 { text-align: center; font-size: 1.2rem; border-bottom: 2px solid #ddd; padding-bottom: 10px; margin-top: 20px; margin-bottom: 20px; }
+        .spectrum-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; }
+        .p-emotion-card { background: #fff; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 6px rgba(0,0,0,0.05); display: flex; flex-direction: column; }
+        .emotion-header { padding: 15px; text-align: center; font-weight: bold; font-size: 1.1rem; display: flex; flex-direction: column; }
+        .emotion-header span.eng { font-size: 0.9rem; font-weight: normal; opacity: 0.8; margin-top: 4px; }
+        .emotion-levels { display: flex; flex-direction: column; flex-grow: 1; }
+        .level { padding: 12px 15px; text-align: center; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(255,255,255,0.2); cursor: pointer; transition: all 0.2s ease; }
+        .level:hover { filter: brightness(0.9); transform: scale(1.02); box-shadow: 0 4px 8px rgba(0,0,0,0.1); z-index: 10; }
+        .level:last-child { border-bottom: none; }
+        .level-title { font-size: 0.85rem; opacity: 0.9; pointer-events: none; }
+        .level-name { font-weight: bold; display: flex; flex-direction: column; align-items: flex-end; pointer-events: none; }
+        .level-name span { font-size: 0.8rem; font-weight: normal; }
 
-@keyframes modalPop {
-    from { transform: scale(0.8); opacity: 0; }
-    to { transform: scale(1); opacity: 1; }
-}
+        .dyad-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 15px; }
+        .dyad-card { background: #fff; border-radius: 8px; padding: 20px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 4px rgba(0,0,0,0.05); border-left: 5px solid #ccc; cursor: pointer; transition: all 0.2s ease; }
+        .dyad-card:hover { transform: translateY(-3px); box-shadow: 0 6px 12px rgba(0,0,0,0.1); background-color: #fdfdfd; }
+        .dyad-result { font-size: 1.2rem; font-weight: bold; display: flex; flex-direction: column; pointer-events: none; }
+        .dyad-result span { font-size: 0.85rem; color: #666; font-weight: normal; }
+        .dyad-formula { display: flex; align-items: center; gap: 10px; font-size: 0.95rem; color: #555; pointer-events: none; }
+        .dot { width: 12px; height: 12px; border-radius: 50%; display: inline-block; }
 
-.modal-close {
-    position: absolute;
-    top: 15px; right: 15px;
-    width: 35px; height: 35px;
-    background: #eee;
-    border-radius: 50%;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 20px; cursor: pointer; font-weight: bold;
-}
+        .card-joy .emotion-header { background-color: var(--p-joy-color); color: #333; }
+        .card-joy .level:nth-child(1) { background-color: #F3C623; color: #333; } 
+        .card-joy .level:nth-child(2) { background-color: var(--p-joy-color); color: #333; } 
+        .card-joy .level:nth-child(3) { background-color: #FDF1B8; color: #333; } 
+        
+        .card-trust .emotion-header { background-color: var(--p-trust-color); color: #333; }
+        .card-trust .level:nth-child(1) { background-color: #8EBA55; color: #fff; }
+        .card-trust .level:nth-child(2) { background-color: var(--p-trust-color); color: #333; }
+        .card-trust .level:nth-child(3) { background-color: #D6E8B3; color: #333; }
 
-.modal-content .title { font-size: 2rem; font-weight: 950; margin-bottom: 15px; text-align: center; border-bottom: 2px solid #eee; padding-bottom: 10px;}
-.modal-content .desc { font-size: 1rem; color: #555; margin-bottom: 20px; line-height: 1.6; text-align: center; font-weight: 800;}
+        .card-fear .emotion-header { background-color: var(--p-fear-color); color: #fff; }
+        .card-fear .level:nth-child(1) { background-color: #38704A; color: #fff; }
+        .card-fear .level:nth-child(2) { background-color: var(--p-fear-color); color: #fff; }
+        .card-fear .level:nth-child(3) { background-color: #92BE9C; color: #333; }
+
+        .card-surprise .emotion-header { background-color: var(--p-surprise-color); color: #fff; }
+        .card-surprise .level:nth-child(1) { background-color: #337A7C; color: #fff; }
+        .card-surprise .level:nth-child(2) { background-color: var(--p-surprise-color); color: #fff; }
+        .card-surprise .level:nth-child(3) { background-color: #9CC9CA; color: #333; }
+
+        .card-sadness .emotion-header { background-color: var(--p-sadness-color); color: #fff; }
+        .card-sadness .level:nth-child(1) { background-color: #4A6596; color: #fff; }
+        .card-sadness .level:nth-child(2) { background-color: var(--p-sadness-color); color: #fff; }
+        .card-sadness .level:nth-child(3) { background-color: #AABBE2; color: #333; }
+
+        .card-disgust .emotion-header { background-color: var(--p-disgust-color); color: #fff; }
+        .card-disgust .level:nth-child(1) { background-color: #6A4D7A; color: #fff; }
+        .card-disgust .level:nth-child(2) { background-color: var(--p-disgust-color); color: #fff; }
+        .card-disgust .level:nth-child(3) { background-color: #C0AED1; color: #333; }
+
+        .card-anger .emotion-header { background-color: var(--p-anger-color); color: #fff; }
+        .card-anger .level:nth-child(1) { background-color: #BA4A45; color: #fff; }
+        .card-anger .level:nth-child(2) { background-color: var(--p-anger-color); color: #fff; }
+        .card-anger .level:nth-child(3) { background-color: #EFA8A4; color: #333; }
+
+        .card-anticipation .emotion-header { background-color: var(--p-anticipation-color); color: #fff; }
+        .card-anticipation .level:nth-child(1) { background-color: #C4723E; color: #fff; }
+        .card-anticipation .level:nth-child(2) { background-color: var(--p-anticipation-color); color: #fff; }
+        .card-anticipation .level:nth-child(3) { background-color: #F2C3A0; color: #333; }
+
+        .p-modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 6000; justify-content: center; align-items: center; opacity: 0; transition: opacity 0.3s ease; }
+        .p-modal-overlay.active { display: flex; opacity: 1; }
+        .p-modal-container { background: #fff; width: 90%; max-width: 650px; max-height: 85vh; border-radius: 16px; box-shadow: 0 15px 35px rgba(0,0,0,0.2); display: flex; flex-direction: column; transform: translateY(20px); transition: transform 0.3s ease; overflow: hidden; }
+        .p-modal-overlay.active .p-modal-container { transform: translateY(0); }
+        .p-modal-header { padding: 25px 30px; color: #fff; display: flex; justify-content: space-between; align-items: center; }
+        .p-modal-title { margin: 0; font-size: 1.5rem; display: flex; align-items: baseline; gap: 10px; }
+        .p-modal-title span.eng { font-size: 1.1rem; opacity: 0.8; font-weight: normal; }
+        .p-close-btn { background: none; border: none; color: inherit; font-size: 1.8rem; cursor: pointer; opacity: 0.8; transition: opacity 0.2s; }
+        .p-close-btn:hover { opacity: 1; }
+        .p-modal-body { padding: 30px; overflow-y: auto; font-size: 1.05rem; line-height: 1.7; color: #333; }
+        .p-modal-body h3 { margin-top: 0; color: #2c3e50; border-bottom: 2px solid #eee; padding-bottom: 8px; margin-bottom: 15px; font-size: 1.2rem; }
+        .p-modal-body p { margin-bottom: 20px; }
+        .p-modal-body ul { padding-left: 20px; margin-bottom: 20px; }
+        .p-modal-body li { margin-bottom: 8px; }
+        .p-tag { display: inline-block; background: #eee; padding: 4px 10px; border-radius: 20px; font-size: 0.85rem; margin-right: 5px; margin-bottom: 15px; color: #555; }
+        .p-related-tags-container { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 20px; }
+        .p-related-tag { display: inline-block; background: #f8f9fa; border: 1px solid #ced4da; padding: 5px 12px; border-radius: 15px; font-size: 0.95rem; color: #212529; font-weight: 500; white-space: nowrap; transition: all 0.2s; }
+        .p-related-tag:hover { background: #e9ecef; border-color: #adb5bd; }
+        
+        #p-imageModal { display: none; position: fixed; z-index: 7000; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.9); justify-content: center; align-items: center; }
+        #p-imageModal img { max-width: 90%; max-height: 90%; border-radius: 8px; cursor: zoom-out; }
+        .p-image-container img { cursor: pointer; transition: transform 0.2s; }
+        .p-image-container img:hover { transform: scale(1.03); }
     </style>
 </head>
 <body>
@@ -268,24 +275,176 @@
     <div class="tab-menu">
         <button class="tab-btn active" id="btn-record" onclick="showSection('record')">마음 관찰 기록</button>
         <button class="tab-btn" id="btn-emotions" onclick="showSection('emotions')">감정 카드</button>
+        <button class="tab-btn" id="btn-judgment" onclick="showSection('judgment')">판단 카드</button>
         <button class="tab-btn" id="btn-needs" onclick="showSection('needs')">욕구 카드</button>
     </div>
 </nav>
 
 <section id="emotions-section" class="content-section">
-    <div class="context-guide">
-        <span class="context-label">지금 관찰 중인 사건</span>
-        <div id="context-display-emotions" class="context-text-display">기록장에서 사건을 먼저 입력해 보세요.</div>
+    <div class="context-guide"><span class="context-label">지금 관찰 중인 사건</span><div id="context-display-emotions" class="context-text-display">기록장에서 사건을 먼저 입력해 보세요.</div></div>
+    
+    <div class="sub-tab-container">
+        <div class="sub-tab-menu">
+            <button class="sub-tab-btn active" id="btn-sub-cards" onclick="showSubEmotion('cards')">감정 카드 목록</button>
+            <button class="sub-tab-btn" id="btn-sub-plutchik" onclick="showSubEmotion('plutchik')">플루칙의 감정 바퀴</button>
+        </div>
     </div>
-    <div class="index-container" id="emotions-index"></div>
-    <div class="grid" id="emotions-grid"></div>
+
+    <div id="sub-emotion-cards">
+        <div class="index-container" id="emotions-index"></div>
+        <div class="grid" id="emotions-grid"></div>
+    </div>
+
+    <div id="sub-emotion-plutchik" style="display: none; padding-bottom: 40px;">
+        <h1 style="text-align: center; font-size: 1.6rem; margin-top: 10px;">플루칙의 감정 바퀴</h1>
+        <p style="text-align: center; color: #666; font-size: 1rem; margin-top: -10px; margin-bottom: 20px;">Plutchik's Wheel of Emotions</p>
+        
+        <div class="p-image-container" style="text-align: center; margin: 20px 0;" title="클릭해서 크게 보기">
+            <img src="plutchick.jpeg" alt="플루칙의 감정 바퀴" style="max-width: 50%; height: auto; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);" onclick="document.getElementById('p-imageModal').style.display='flex'">
+        </div>
+
+        <div class="p-container">
+            <h2>8가지 기본 감정 스펙트럼(심화→기본→약화)</h2>
+            <div class="spectrum-grid">
+                <div class="p-emotion-card card-joy">
+                    <div class="emotion-header">기쁨 <span class="eng">Joy</span></div>
+                    <div class="emotion-levels">
+                        <div class="level" data-emotion="ecstasy" data-color="#F3C623" data-text="#333"><span class="level-title">강한 감정 (중심)</span><span class="level-name">황홀 <span>Ecstasy</span></span></div>
+                        <div class="level" data-emotion="joy" data-color="#FCE17A" data-text="#333"><span class="level-title">기본 감정 (중간)</span><span class="level-name">기쁨 <span>Joy</span></span></div>
+                        <div class="level" data-emotion="serenity" data-color="#FDF1B8" data-text="#333"><span class="level-title">약한 감정 (외곽)</span><span class="level-name">평온 <span>Serenity</span></span></div>
+                    </div>
+                </div>
+
+                <div class="p-emotion-card card-trust">
+                    <div class="emotion-header">신뢰 <span class="eng">Trust</span></div>
+                    <div class="emotion-levels">
+                        <div class="level" data-emotion="admiration" data-color="#8EBA55" data-text="#fff"><span class="level-title">강한 감정 (중심)</span><span class="level-name">경애 <span>Admiration</span></span></div>
+                        <div class="level" data-emotion="trust" data-color="#B5D585" data-text="#333"><span class="level-title">기본 감정 (중간)</span><span class="level-name">신뢰 <span>Trust</span></span></div>
+                        <div class="level" data-emotion="acceptance" data-color="#D6E8B3" data-text="#333"><span class="level-title">약한 감정 (외곽)</span><span class="level-name">수용 <span>Acceptance</span></span></div>
+                    </div>
+                </div>
+
+                <div class="p-emotion-card card-fear">
+                    <div class="emotion-header">두려움 <span class="eng">Fear</span></div>
+                    <div class="emotion-levels">
+                        <div class="level" data-emotion="terror" data-color="#38704A" data-text="#fff"><span class="level-title">강한 감정 (중심)</span><span class="level-name">공포 <span>Terror</span></span></div>
+                        <div class="level" data-emotion="fear" data-color="#5C9A6C" data-text="#fff"><span class="level-title">기본 감정 (중간)</span><span class="level-name">두려움 <span>Fear</span></span></div>
+                        <div class="level" data-emotion="apprehension" data-color="#92BE9C" data-text="#333"><span class="level-title">약한 감정 (외곽)</span><span class="level-name">불안 <span>Apprehension</span></span></div>
+                    </div>
+                </div>
+
+                <div class="p-emotion-card card-surprise">
+                    <div class="emotion-header">놀람 <span class="eng">Surprise</span></div>
+                    <div class="emotion-levels">
+                        <div class="level" data-emotion="amazement" data-color="#337A7C" data-text="#fff"><span class="level-title">강한 감정 (중심)</span><span class="level-name">경탄 <span>Amazement</span></span></div>
+                        <div class="level" data-emotion="surprise" data-color="#55A2A3" data-text="#fff"><span class="level-title">기본 감정 (중간)</span><span class="level-name">놀람 <span>Surprise</span></span></div>
+                        <div class="level" data-emotion="distraction" data-color="#9CC9CA" data-text="#333"><span class="level-title">약한 감정 (외곽)</span><span class="level-name">동요 <span>Distraction</span></span></div>
+                    </div>
+                </div>
+
+                <div class="p-emotion-card card-sadness">
+                    <div class="emotion-header">슬픔 <span class="eng">Sadness</span></div>
+                    <div class="emotion-levels">
+                        <div class="level" data-emotion="grief" data-color="#4A6596" data-text="#fff"><span class="level-title">강한 감정 (중심)</span><span class="level-name">비탄 <span>Grief</span></span></div>
+                        <div class="level" data-emotion="sadness" data-color="#6C8BC1" data-text="#fff"><span class="level-title">기본 감정 (중간)</span><span class="level-name">슬픔 <span>Sadness</span></span></div>
+                        <div class="level" data-emotion="pensiveness" data-color="#AABBE2" data-text="#333"><span class="level-title">약한 감정 (외곽)</span><span class="level-name">감상적 <span>Pensiveness</span></span></div>
+                    </div>
+                </div>
+
+                <div class="p-emotion-card card-disgust">
+                    <div class="emotion-header">혐오 <span class="eng">Disgust</span></div>
+                    <div class="emotion-levels">
+                        <div class="level" data-emotion="loathing" data-color="#6A4D7A" data-text="#fff"><span class="level-title">강한 감정 (중심)</span><span class="level-name">증오 <span>Loathing</span></span></div>
+                        <div class="level" data-emotion="disgust" data-color="#9375A7" data-text="#fff"><span class="level-title">기본 감정 (중간)</span><span class="level-name">혐오 <span>Disgust</span></span></div>
+                        <div class="level" data-emotion="boredom" data-color="#C0AED1" data-text="#333"><span class="level-title">약한 감정 (외곽)</span><span class="level-name">권태 <span>Boredom</span></span></div>
+                    </div>
+                </div>
+
+                <div class="p-emotion-card card-anger">
+                    <div class="emotion-header">분노 <span class="eng">Anger</span></div>
+                    <div class="emotion-levels">
+                        <div class="level" data-emotion="rage" data-color="#BA4A45" data-text="#fff"><span class="level-title">강한 감정 (중심)</span><span class="level-name">격노 <span>Rage</span></span></div>
+                        <div class="level" data-emotion="anger" data-color="#DD6E66" data-text="#fff"><span class="level-title">기본 감정 (중간)</span><span class="level-name">분노 <span>Anger</span></span></div>
+                        <div class="level" data-emotion="annoyance" data-color="#EFA8A4" data-text="#333"><span class="level-title">약한 감정 (외곽)</span><span class="level-name">짜증 <span>Annoyance</span></span></div>
+                    </div>
+                </div>
+
+                <div class="p-emotion-card card-anticipation">
+                    <div class="emotion-header">기대 <span class="eng">Anticipation</span></div>
+                    <div class="emotion-levels">
+                        <div class="level" data-emotion="vigilance" data-color="#C4723E" data-text="#fff"><span class="level-title">강한 감정 (중심)</span><span class="level-name">경계 <span>Vigilance</span></span></div>
+                        <div class="level" data-emotion="anticipation" data-color="#E89A64" data-text="#fff"><span class="level-title">기본 감정 (중간)</span><span class="level-name">기대 <span>Anticipation</span></span></div>
+                        <div class="level" data-emotion="interest" data-color="#F2C3A0" data-text="#333"><span class="level-title">약한 감정 (외곽)</span><span class="level-name">관심 <span>Interest</span></span></div>
+                    </div>
+                </div>
+            </div>
+
+            <h2>혼합 감정(두 가지 기본감정)</h2>
+            <div class="dyad-grid">
+                <div class="dyad-card" data-emotion="optimism" data-color="#E89A64" data-text="#fff" style="border-color: #E89A64;">
+                    <div class="dyad-result">낙관 <span>Optimism</span></div>
+                    <div class="dyad-formula">
+                        <span class="dot" style="background: var(--p-anticipation-color);"></span> 기대 + 기쁨 <span class="dot" style="background: var(--p-joy-color);"></span>
+                    </div>
+                </div>
+
+                <div class="dyad-card" data-emotion="aggressiveness" data-color="#E89A64" data-text="#fff" style="border-color: #E89A64;">
+                    <div class="dyad-result">공격성 <span>Aggressiveness</span></div>
+                    <div class="dyad-formula">
+                        <span class="dot" style="background: var(--p-anger-color);"></span> 분노 + 기대 <span class="dot" style="background: var(--p-anticipation-color);"></span>
+                    </div>
+                </div>
+
+                <div class="dyad-card" data-emotion="contempt" data-color="#DD6E66" data-text="#fff" style="border-color: #DD6E66;">
+                    <div class="dyad-result">경멸 <span>Contempt</span></div>
+                    <div class="dyad-formula">
+                        <span class="dot" style="background: var(--p-disgust-color);"></span> 혐오 + 분노 <span class="dot" style="background: var(--p-anger-color);"></span>
+                    </div>
+                </div>
+                <div class="dyad-card" data-emotion="remorse" data-color="#9375A7" data-text="#fff" style="border-color: #9375A7;">
+                    <div class="dyad-result">후회 <span>Remorse</span></div>
+                    <div class="dyad-formula">
+                        <span class="dot" style="background: var(--p-sadness-color);"></span> 슬픔 + 혐오 <span class="dot" style="background: var(--p-disgust-color);"></span>
+                    </div>
+                </div>
+                <div class="dyad-card" data-emotion="disapproval" data-color="#6C8BC1" data-text="#fff" style="border-color: #6C8BC1;">
+                    <div class="dyad-result">실망 <span>Disapproval</span></div>
+                    <div class="dyad-formula">
+                        <span class="dot" style="background: var(--p-surprise-color);"></span> 놀람 + 슬픔 <span class="dot" style="background: var(--p-sadness-color);"></span>
+                    </div>
+                </div>
+                <div class="dyad-card" data-emotion="awe" data-color="#55A2A3" data-text="#fff" style="border-color: #55A2A3;">
+                    <div class="dyad-result">외경 <span>Awe</span></div>
+                    <div class="dyad-formula">
+                        <span class="dot" style="background: var(--p-fear-color);"></span> 두려움 + 놀람 <span class="dot" style="background: var(--p-surprise-color);"></span>
+                    </div>
+                </div>
+                <div class="dyad-card" data-emotion="submission" data-color="#5C9A6C" data-text="#fff" style="border-color: #5C9A6C;">
+                    <div class="dyad-result">복종 <span>Submission</span></div>
+                    <div class="dyad-formula">
+                        <span class="dot" style="background: var(--p-trust-color);"></span> 신뢰 + 두려움 <span class="dot" style="background: var(--p-fear-color);"></span>
+                    </div>
+                </div>
+                <div class="dyad-card" data-emotion="love" data-color="#B5D585" data-text="#333" style="border-color: #B5D585;">
+                    <div class="dyad-result">사랑 <span>Love</span></div>
+                    <div class="dyad-formula">
+                        <span class="dot" style="background: var(--p-joy-color);"></span> 기쁨 + 신뢰 <span class="dot" style="background: var(--p-trust-color);"></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section id="judgment-section" class="content-section">
+    <div class="context-guide"><span class="context-label">지금 관찰 중인 사건</span><div id="context-display-judgment" class="context-text-display">기록장에서 사건을 먼저 입력해 보세요.</div></div>
+    
+    <div class="index-container" id="judgment-index"></div>
+    <div class="grid" id="judgment-grid"></div>
 </section>
 
 <section id="needs-section" class="content-section">
-    <div class="context-guide">
-        <span class="context-label">지금 관찰 중인 사건</span>
-        <div id="context-display-needs" class="context-text-display">기록장에서 사건을 먼저 입력해 보세요.</div>
-    </div>
+    <div class="context-guide"><span class="context-label">지금 관찰 중인 사건</span><div id="context-display-needs" class="context-text-display">기록장에서 사건을 먼저 입력해 보세요.</div></div>
     <div class="index-container" id="needs-index"></div>
     <div class="grid" id="needs-grid"></div>
 </section>
@@ -293,31 +452,27 @@
 <section id="record-section" class="content-section active">
     <div id="capture">
         <div class="admin-section" id="adminPanel">
-            <button class="admin-toggle-btn" onclick="toggleAdminPanel()">
-                <span id="adminStatusText">⚙️ 사용자 및 사건 설정</span>
-                <span id="toggleIcon">▼</span>
-            </button>
+            <button class="admin-toggle-btn" onclick="toggleAdminPanel()"><span id="adminStatusText">⚙️ 사용자 및 사건 설정</span><span id="toggleIcon">▼</span></button>
             <div class="admin-content" id="adminContent">
                 <div class="manage-row">
                     <span class="label" style="font-size:12px; font-weight:400; color:#8E8E93">1. 사용자</span>
+                    <div class="input-group"><input type="text" id="newUserName" placeholder="이름"><button class="btn btn-add" onclick="addUser()">등록</button></div>
+                    <div class="input-group"><select id="userSelect" onchange="changeUser()"></select><button class="btn btn-del" onclick="deleteUser()">삭제</button></div>
+                </div>
+                <div class="manage-row">
+                    <span class="label" style="font-size:12px; font-weight:400; color:#8E8E93">2. 사건</span>
+                    <div class="input-group"><input type="text" id="newEventName" placeholder="사건명"><button class="btn btn-add" onclick="addEvent()">추가</button></div>
                     <div class="input-group">
-                        <input type="text" id="newUserName" placeholder="이름">
-                        <button class="btn btn-add" onclick="addUser()">등록</button>
-                    </div>
-                    <div class="input-group">
-                        <select id="userSelect" onchange="changeUser()"></select>
-                        <button class="btn btn-del" onclick="deleteUser()">삭제</button>
+                        <select id="eventSelect" onchange="syncTitleAndLoad()"></select>
+                        <button class="btn" style="background:#FF9500; color:white;" onclick="editEvent()">수정</button>
+                        <button class="btn btn-del" onclick="deleteEvent()">삭제</button>
                     </div>
                 </div>
                 <div class="manage-row" style="border-bottom:none; margin-top: 5px; margin-bottom: 0; padding-bottom: 0;">
-                    <span class="label" style="font-size:12px; font-weight:400; color:#8E8E93">2. 사건</span>
+                    <span class="label" style="font-size:12px; font-weight:400; color:#8E8E93">3. 기기 간 백업/복원</span>
                     <div class="input-group">
-                        <input type="text" id="newEventName" placeholder="사건명">
-                        <button class="btn btn-add" onclick="addEvent()">추가</button>
-                    </div>
-                    <div class="input-group">
-                        <select id="eventSelect" onchange="syncTitleAndLoad()"></select>
-                        <button class="btn btn-del" onclick="deleteEvent()">삭제</button>
+                        <button class="btn" style="background:#6c757d; color:white; flex:1;" onclick="exportData()">파일로 백업</button>
+                        <button class="btn" style="background:#28a745; color:white; flex:1;" onclick="importData()">파일에서 복원</button>
                     </div>
                 </div>
             </div>
@@ -330,626 +485,740 @@
             <div class="record-card-desc">투사나 판단, 자기비난을 내려놓고 관찰된 사실만 적어보세요</div>
             <textarea id="step1" placeholder="❌ 판단:그 사람이 나를 무시했다&#10;✅ 사실:회의 중 내가 말을 할 때 그 사람이 휴대폰을 보았다"></textarea>
         </div>
-
-        <div class="record-card">
-            <div class="record-card-title">2. 감정 찾기</div>
-            <div class="record-card-desc">카드에서 찾은 감정 단어 추가</div>
-            <textarea id="step2"></textarea>
+        <div class="record-card"><div class="record-card-title">2. 감정 찾기(가장 강하게 올라오는 감정 3개)</div><div class="record-card-desc">카드에서 찾은 감정 단어 추가</div><textarea id="step2"></textarea></div>
+        
+        <div class="record-card" id="step3-container">
+            <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 4px;">
+                <div class="record-card-title" style="margin-bottom: 0; line-height: 1.2;">3. 감정을 일으킨 생각들 (나와 상대에 대한 판단과 당위성)</div>
+                <label id="toggle-judgment-label" style="font-size: 0.75rem; font-weight: 700; color: #555; display: flex; align-items: center; gap: 4px; cursor: pointer; flex-shrink: 0; padding-left: 10px;">
+                    <input type="checkbox" id="toggle-judgment-checkbox" onchange="toggleJudgmentFields()" style="margin:0;" checked>
+                    판단창 숨기기
+                </label>
+            </div>
+            <div class="record-card-desc">원인을 외부 상황이 아닌 내 머릿속의 '판단'과 '생각'에서 찾아보세요.</div>
+            
+            <div style="margin-top: 15px;">
+                <div style="font-size: 0.85rem; font-weight: 700; color: #555; margin-bottom: 5px;">감정을 일으킨 생각들 (상황이나 사실에 대한 생각)</div>
+                <textarea id="step3_1" placeholder="그때 상황에 대해 어떤 생각이 드셨나요?&#10;(예: 그 사람이 약속 시간에 늦어서 나를 무시했다는 생각이 든다)"></textarea>
+            </div>
+            
+            <div id="judgment-fields-container" style="display: none">
+                <div style="margin-top: 12px;">
+                    <div style="font-size: 0.85rem; font-weight: 700; color: var(--danger-red); margin-bottom: 5px;"><span class="badge badge-other">상대</span>상대에 대한 나의 판단들</div>
+                    <textarea id="step3_2" placeholder="판단카드에서 찾은 상대에 대한 판단이나, 평소 상대에게 하던 비난을 적어보세요.&#10;(예: 이기적이다, 무책임하다)"></textarea>
+                </div>
+                <div style="margin-top: 12px;">
+                    <div style="font-size: 0.85rem; font-weight: 700; color: var(--primary-blue); margin-bottom: 5px;"><span class="badge badge-self">나</span>나 자신에 대한 나의 판단들</div>
+                    <textarea id="step3_3" placeholder="내면에 숨겨진 자책이나 스스로를 판단하는 생각들을 적어보세요.&#10;(예: 내가 부족해서 무시당한 것이다, 나는 왜 항상 상처를 받을까)"></textarea>
+                </div>
+            </div>
         </div>
 
+        <div class="record-card"><div class="record-card-title">4. 핵심 욕구(가장 원하는 욕구 3개)</div><div class="record-card-desc">욕구카드에서 찾은 욕구 단어들을 추가</div><textarea id="step4"></textarea></div>
         <div class="record-card">
-            <div class="record-card-title">3. 위의 감정들을 일으킨 생각들</div>
-			<div class="record-card-desc">감정을 일으킨 내 안의 '판단'이나 '생각'들을 적어보세요.<br>(원인을 상대나 상황이 아닌 내안에서 찾아보세요.)</div>
-            <div id="step3" class="editable-list" contenteditable="true" data-placeholder="❌ 그 사람이 약속시간에 늦어서 나는 화가난다.&#10;✅ 그 사람이 나를 무시했다는 생각에 화가난다."></div>
-        </div>
-
-        <div class="record-card">
-            <div class="record-card-title">4. 핵심 욕구</div>
-			<div class="record-card-desc">욕구카드에서 찾은 욕구 단어들을 추가</div>
-            <textarea id="step4"></textarea>
-        </div>
-
-        <div class="record-card">
-            <div class="record-card-title">5. 욕구 강화</div>
-			<div class="record-card-desc">이 욕구가 나에게 왜 그토록 중요한 이유를 적어보세요.<br>(나는 '욕구'를 원한다. 왜냐하면 ~ 때문이다. )</div>
+            <div class="record-card-title">5. 욕구 강화(각각의 욕구를 원하는 긍정적인 이유 3개)</div>
+            <div class="record-card-desc">이 욕구가 나에게 왜 그토록 중요한 이유를 적어보세요.<br>(나는 '욕구'를 원한다. 왜냐하면 ~ 때문이다. )</div>
             <div id="step5" class="editable-list" contenteditable="true"></div>
         </div>
-
         <div class="record-card">
             <div class="record-card-title">6. 구체적인 행동</div>
-			<div class="record-card-desc">나와 상대의 욕구를 강화를 위한 긍정적이고 구체적이며 내가 할 수 있는 실천3가지</div>
+            <div class="record-card-desc">나와 상대의 욕구를 강화를 위한 긍정적이고 구체적이며 내가 할 수 있는 실천3가지</div>
             <div id="step6" class="editable-list" contenteditable="true" data-placeholder="❌ 나는 저녁시간에 스마트폰을 보지않겠다.&#10;✅ 나는 저녁시간에 30분씩 산책을 하겠다."></div>
         </div>
-
-        <div class="record-card">
-            <div class="record-card-title">7. 정리 및 통합</div>
-			<div class="record-card-desc">새롭게 알게된 점이나 나에게 해주고 싶은 말</div>
-            <textarea id="step7"></textarea>
-        </div>
-
-        <div class="record-card" style="border-top: 5px solid var(--connection-core);">
-            <div class="record-card-title">8. 상대의 욕구 인식</div>
-			<div class="record-card-desc">상대방의 욕구 공유하기</div>
-            <textarea id="step8"></textarea>
-        </div>
-
-        <div class="record-card" id="step9-container" style="border-top: 5px solid #333;">
-            <div class="card-title-row" onclick="togglestep9()" style="cursor: pointer;">
-                <div class="record-card-title">Gemini <span id="toggle-icon">▲</span></div>
-				<div class="record-card-desc">기록 내용과 질문들을 합쳐서 Gemini에게 물어보기</div>
-            </div>
-            <div id="step9-content" style="display: none; padding-top:10px;">
-                <span class="section-label">사건  + 질문(Gemini 도움받기)</span>
-                <textarea id="step9" placeholder="예: 위의 사건과 감정을 바탕으로 나에게 필요한 공감과 위로를 해줘."></textarea>
-                <button class="copy-btn btn-q1" onclick="copyQ1()">📋 복사: 사건 + 질문</button>
-
-                <div style="height: 15px; border-bottom: 1px solid #eee; margin-bottom: 15px;"></div>
-
-                <span class="section-label">전체내용 + 질문 (상대에게 요청하기)</span>
-                <textarea id="step9_extra" placeholder="예: 1~6번 내용을 바탕으로 나의 욕구와 상대의 욕구를 조화시킬 대화법을 제안해줘."></textarea>
-                <button class="copy-btn btn-q2" onclick="copyQ2()">📋 복사: 1~6번 + 질문</button>
-            </div>
-        </div>
+        <div class="record-card"><div class="record-card-title">7. 정리 및 통합</div><div class="record-card-desc">새롭게 알게된 점이나 나에게 해주고 싶은 말</div><textarea id="step7"></textarea></div>
     </div>
 </section>
 
 <div class="fixed-bottom-bar" id="fixedBottomBar">
-    <button class="btn-save-local" onclick="triggerManualSave()">💾 브라우저 저장</button>
+    <button class="btn-save-cloud" onclick="manualSave()">💾 저장하기</button>
     <button class="btn-image" id="shareBtn" onclick="makeImage()">❤️ 이미지 공유</button>
+    <button class="btn-refresh" onclick="location.reload()" title="새로고침">🔄</button>
 </div>
 
-<div id="previewBox">
-    <img id="previewImg">
-    <button id="closeBtn" onclick="closePreview()">닫기</button>
+<div id="previewBox"><img id="previewImg"><button id="closeBtn" onclick="closePreview()">닫기</button></div>
+
+<div class="p-modal-overlay" id="p-emotionModal">
+    <div class="p-modal-container">
+        <div class="p-modal-header" id="p-modalHeader">
+            <h2 class="p-modal-title" id="p-modalTitle">감정 <span>Emotion</span></h2>
+            <button class="p-close-btn" id="p-closeModal">&times;</button>
+        </div>
+        <div class="p-modal-body" id="p-modalBody"></div>
+    </div>
+</div>
+
+<div id="p-imageModal" onclick="this.style.display='none'">
+    <img src="plutchick.jpeg" alt="확대된 이미지">
 </div>
 
 <script>
-// 데이터 배열
 const needsData = [
-    { name: "효율성",cat: "cat-auto",desc: "최소한의 에너지나 자원으로 최대한의 결과물을 얻고, 질서 있게 일을 처리하고 싶은 마음",sat: ["뿌듯하다", "경쾌하다", "홀가분하다"],unsat: ["허탈하다", "조급하다", "무기력하다"],action: "우선순위를 정하고 불필요한 단계를 줄여보세요."},
+    { name: "효율성", cat: "cat-auto", desc: "최소한의 자원과 에너지로 최대한의 결실을 얻고, 질서 있게 일을 처리하고 싶은 욕구", sat: ["홀가분하다", "만족하다"], unsat: ["답답하다", "피곤하다"], action: "우선순위를 정하고 불필요한 단계를 줄여보세요." },
     { name: "효능감", cat: "cat-auto", desc: "어떤 일을 성공적으로 수행할 수 있다는 자신의 능력에 대한 믿음과 확신을 얻고 싶은 마음", sat: ["자신 있다", "활기차다", "든든하다"], unsat: ["막막하다", "회의적이다", "무력하다"], action: "아주 작은 목표를 설정하고 그것을 완수하는 경험을 반복해보세요." },
-    { name: "자유•자율성", cat: "cat-auto", desc: "자신의 가치와 꿈에 따라 스스로 선택하고 행동하고 싶은 마음", sat: ["행복하다", "만족하다"], unsat: ["답답하다", "억울하다"], action: "나만의 시간을 확보하세요." },
-    { name: "공정함", cat: "cat-auto", desc: "내가 노력한 만큼 정당한 대가와 대우를 받고, 치우침 없이 평등하게 다루어지길 바라는 욕구", sat: ["홀가분하다", "신뢰감을 느끼다"], unsat: ["억울하다", "분개하다"], action: "개인의 편견을 내려놓고 정해진 기준과 원칙에 따라 투명하게 대치해보세요." },
-    { name: "명확함", cat: "cat-auto", desc: "상황이나 정보, 상대의 의도를 왜곡 없이 투명하고 확실하게 알고 싶은 욕구", sat: ["홀가분하다", "홀가분하다"], unsat: ["혼란스럽다", "답답하다"], action: "모호한 짐작을 내려놓고, 구체적인 사실을 확인하거나 상대에게 명확한 질문을 건네보세요." },
-    { name: "선택", cat: "cat-auto", desc: "나의 의지로 방향을 정하고 결정하고 싶은 마음", sat: ["자랑스럽다", "기쁘다"], unsat: ["답답하다", "억울하다"], action: "사소한 결정부터 직관에 따라 결정해 보세요." },
-    { name: "혼자만의 시간과 공간", cat: "cat-auto", desc: "온전히 나 자신과 마주하고 싶은 욕구", sat: ["편안하다", "만족하다"], unsat: ["답답하다", "불편하다"], action: "아지트에서 1시간 동안 집중해 보세요." },
-    { name: "자기표현", cat: "cat-auto", desc: "나만의 고유한 생각과 개성을 외부로 드러내고 싶은 욕구", sat: ["기쁘다", "자랑스럽다"], unsat: ["답답하다", "부끄럽다"], action: "독창적인 생각을 기록해 보세요." },
-    { name: "자기주도", cat: "cat-auto", desc: "나의 선택과 의지에 따라 삶의 방향과 행동을 스스로 결정하고 싶은 욕구", sat: ["자유롭다", "당당하다", "활기차다"], unsat: ["무력하다", "답답하다", "억울하다"], action: "오늘 내가 스스로 선택할 수 있는 작은 일 하나를 정해보세요." },
-    { name: "우정", cat: "cat-conn", desc: "서로 아끼고 신뢰를 나누고 싶은 바람", sat: ["사랑스럽다", "든든하다"], unsat: ["서운하다", "외롭다"], action: "친구에게 안부를 물어보세요." },
-    { name: "공동체", cat: "cat-conn", desc: "어딘가에 속해 서로 돕고 기여하며 연결되고 싶은 욕구", sat: ["뿌듯하다", "든든하다"], unsat: ["소외되다", "불안하다"], action: "이웃에게 가벼운 인사를 건네보세요." },
-    { name: "이해", cat: "cat-conn", desc: "나의 마음이 정확히 전달되고 수용되기를 바라는 마음", sat: ["감동하다", "편안하다"], unsat: ["서운하다", "답답하다"], action: "소통의 오해를 확인해 보세요." },
-    { name: "존중", cat: "cat-conn", desc: "가치를 인정받고 소중히 다뤄지기를 바라는 마음", sat: ["뿌듯하다", "든든하다"], unsat: ["억울하다", "속상하다"], action: "받고 싶은 대우를 요청하세요." },
-    { name: "상호존중", cat: "cat-conn", desc: "서로의 다름을 인정하고, 품격 있는 태도로 서로의 존재와 가치를 소중히 여기고 싶은 마음", sat: ["존중받다", "든든하다", "편안하다"], unsat: ["무시당하다", "불쾌하다", "비참하다"], action: "상대방의 말을 끝까지 듣고 비판 없이 수용하는 연습을 해보세요." },
-    { name: "관심", cat: "cat-conn", desc: "누군가 내 존재를 알아주기를 바라는 마음", sat: ["반갑다", "행복하다"], unsat: ["서운하다", "외롭다"], action: "나에 대해 질문해달라고 요청하세요." },
-    { name: "소통", cat: "cat-conn", desc: "생각과 느낌을 주고받으며 연결을 맺는 행위", sat: ["반갑다", "재미있다"], unsat: ["답답하다", "어색하다"], action: "끝까지 듣고 요약해 보세요." },
-    { name: "신뢰", cat: "cat-conn", desc: "믿고 의지할 수 있는 단단한 관계의 토대", sat: ["든든하다", "편안하다"], unsat: ["불안하다", "걱정하다"], action: "작은 도움을 요청해 보세요." },
-    { name: "협력", cat: "cat-conn", desc: "공통 목표를 위해 힘을 합치고 싶은 바람", sat: ["든든하다", "뿌듯하다"], unsat: ["답답하다", "귀찮다"], action: "상대에게 도움을 요청하세요." },
-    { name: "연결•친밀함", cat: "cat-conn", desc: "정서적으로 가까워져 유대감을 느끼고 싶은 욕구", sat: ["사랑스럽다", "설레다"], unsat: ["외롭다", "서운하다"], action: "눈을 맞추며 대화해 보세요." },
-    { name: "어울리기", cat: "cat-conn", desc: "즐겁게 섞여 사회적인 에너지를 나누고 싶은 바람", sat: ["신나다", "재미있다"], unsat: ["어색하다", "외롭다"], action: "가벼운 티타임에 참석하세요." },
-    { name: "공감", cat: "cat-conn", desc: "상대의 마음을 내 것처럼 느끼고 싶은 욕구", sat: ["감동하다", "따뜻하다"], unsat: ["서운하다", "외롭다"], action: "공감의 한마디를 건네보세요." },
-    { name: "포용", cat: "cat-conn", desc: "나의 못난 부분이나 실수, 다름까지도 조건 없이 있는 그대로 받아들여지길 바라는 욕구", sat: ["안심되다", "든든하다"], unsat: ["위축되다", "소외감을 느끼다"], action: "상대의 판단이나 평가 없이 있는 그대로 수용하는 태도를 보여주세요." },
-    { name: "수용", cat: "cat-conn", desc: "나의 생각, 감정, 현재의 모습을 왜곡이나 저항 없이 있는 그대로 받아들여 주길 바라는 욕구", sat: ["자유롭다", "편안하다"], unsat: ["답답하다", "거부당하다"], action: "상대의 이야기를 바꾸려 하거나 조언하려 하지 말고, '그랬구나' 하며 있는 그대로 비춰주세요." },
-    { name: "위로", cat: "cat-conn", desc: "나의 슬픔과 아픔, 지친 마음을 누군가 알아주고 다독여주길 바라는 욕구", sat: ["위안이 되다", "평온하다"], unsat: ["속상하다", "막막하다"], action: "상대의 힘든 마음을 묵묵히 들어주며 따뜻한 체온이나 가벼운 신체 접촉을 나눠보세요." },
-    { name: "마음알아주기", cat: "cat-conn", desc: "있는 그대로 수용받고 싶은 욕구", sat: ["감동하다", "든든하다"], unsat: ["억울하다", "서럽다"], action: "감정의 이름을 불러주세요." },
-    { name: "소속감", cat: "cat-conn", desc: "집단의 일원으로서 안정감을 느끼고 싶은 마음", sat: ["든든하다", "편안하다"], unsat: ["외롭다", "불안하다"], action: "작은 역할을 자원해 보세요." },
-    { name: "도움•지지", cat: "cat-conn", desc: "어려울 때 기댈 수 있는 격려가 필요한 마음", sat: ["든든하다", "감사하다"], unsat: ["막막하다", "서럽다"], action: "명확히 도움을 요청하세요." },
-    { name: "나눔", cat: "cat-conn", desc: "가진 것을 전달하며 기쁨을 얻고 싶은 마음", sat: ["행복하다", "뿌듯하다"], unsat: ["속상하다", "허탈하다"], action: "깜짝 선물을 해보세요." },
-    { name: "배려", cat: "cat-conn", desc: "타인의 형편을 살피고 마음을 쓰는 성품", sat: ["뿌듯하다", "따뜻하다"], unsat: ["속상하다", "서운하다"], action: "주변 필요를 살펴보세요." },
-    { name: "정서적 배려", cat: "cat-conn", desc: "자신의 감정을 보살피고, 타인의 마음 상태를 세심하게 살피며 연결되고 싶은 마음", sat: ["따뜻하다", "연결되다", "안심하다"], unsat: ["서운하다", "외롭다", "단절되다"], action: "상대방의 감정 단어에 귀를 기울이고 공감의 한마디를 건네보세요." },
-    { name: "보살핌", cat: "cat-conn", desc: "누군가를 돌보거나 돌봄 받기를 바라는 본능", sat: ["사랑스럽다", "든든하다"], unsat: ["외롭다", "불안하다"], action: "나 자신을 돌보세요." },
-    { name: "사랑", cat: "cat-conn", desc: "생명 그 자체를 아끼고 소중히 여기는 에너지", sat: ["사랑스럽다", "행복하다"], unsat: ["슬프다", "서럽다"], action: "사랑해라고 전하세요." },
-    { name: "공기", cat: "cat-well", desc: "생명 유지를 위한 필수적인 에너지", sat: ["편안하다", "만족하다"], unsat: ["답답하다", "괴롭다"], action: "심호흡을 하세요." },
-    { name: "음식•주거", cat: "cat-well", desc: "안전한 기반과 에너지를 얻고 싶은 마음", sat: ["든든하다", "편안하다"], unsat: ["불안하다", "걱정하다"], action: "건강한 한 끼를 드세요." },
-    { name: "건강", cat: "cat-well", desc: "몸과 마음이 활기차게 기능하기를 바라는 상태", sat: ["행복하다", "만족하다"], unsat: ["우울하다", "걱정하다"], action: "물 한 잔을 마셔보세요." },
-    { name: "휴식", cat: "cat-well", desc: "에너지를 재충전하고 싶은 욕구", sat: ["편안하다", "만족하다"], unsat: ["피곤하다", "짜증나다"], action: "10분간 멈춰보세요." },
-    { name: "잠", cat: "cat-well", desc: "회복을 시키는 필수 조건", sat: ["편안하다", "만족하다"], unsat: ["피곤하다", "예민하다"], action: "스마트폰을 멈추세요." },
-    { name: "재미", cat: "cat-well", desc: "유쾌한 자극을 즐기고 싶은 욕구", sat: ["신나다", "재미있다"], unsat: ["지루하다", "답답하다"], action: "취미 활동을 하세요." },
-    { name: "놀이", cat: "cat-well", desc: "목적 없이 즐거움을 느끼는 활동", sat: ["신나다", "재미있다"], unsat: ["지루하다", "답답하다"], action: "어린아이처럼 낙서하세요." },
-    { name: "운동", cat: "cat-well", desc: "몸을 움직여 에너지를 발산하고 싶은 욕구", sat: ["신나다", "만족하다"], unsat: ["피곤하다", "무기력하다"], action: "15분간 산책하세요." },
-    { name: "편안함", cat: "cat-well", desc: "긴장이 없는 이완된 상태", sat: ["편안하다", "만족하다"], unsat: ["불안하다", "불편하다"], action: "편한 옷을 입으세요." },
-    { name: "회복", cat: "cat-well", desc: "균형으로 돌아가고 싶은 욕구", sat: ["뿌듯하다", "편안하다"], unsat: ["무기력하다", "괴롭다"], action: "자연 속으로 나가보세요." },
-    { name: "예측가능성", cat: "cat-peace", desc: "상황을 파악하여 안정을 얻고 싶은 욕구", sat: ["편안하다", "든든하다"], unsat: ["불안하다", "당황하다"], action: "루틴을 만드세요." },
-    { name: "일관성", cat: "cat-peace", desc: "앞뒤가 맞아 신뢰를 유지하고 싶은 바람", sat: ["든든하다", "편안하다"], unsat: ["당황하다", "혼란스럽다"], action: "작은 약속부터 지키세요." },
-    { name: "믿음", cat: "cat-peace", desc: "내면의 흔들림을 잡고 싶은 마음", sat: ["든든하다", "평온하다"], unsat: ["불안하다", "막막하다"], action: "힘이 되는 문구를 읽으세요." },
-    { name: "여유", cat: "cat-peace", desc: "현재를 음미할 수 있는 공간", sat: ["행복하다", "만족하다"], unsat: ["초조하다", "긴장하다"], action: "일정 사이에 여백을 두세요." },
-    { name: "조화", cat: "cat-peace", desc: "갈등 없이 균형을 이루고 싶은 상태", sat: ["평온하다", "만족하다"], unsat: ["불편하다", "어색하다"], action: "제3의 길을 질문하세요." },
-    { name: "감사", cat: "cat-peace", desc: "소중함을 표현하고 싶은 욕구", sat: ["행복하다", "따뜻하다"], unsat: ["속상하다", "허탈하다"], action: "3가지를 기록하세요." },
-    { name: "평등", cat: "cat-peace", desc: "공정한 대우를 받기를 바라는 마음", sat: ["편안하다", "만족하다"], unsat: ["분하다", "억울하다"], action: "의견을 정중히 밝히세요." },
-    { name: "평화", cat: "cat-peace", desc: "고요하고 조화로운 상태", sat: ["편안하다", "행복하다"], unsat: ["불안하다", "짜증나다"], action: "명상을 해보세요." },
-    { name: "안전", cat: "cat-peace", desc: "위협으로부터 보호받고 싶은 욕구", sat: ["편안하다", "든든하다"], unsat: ["두렵다", "무섭다"], action: "안전한 사람을 떠올리세요." },
-    { name: "보호", cat: "cat-peace", desc: "지키고 싶은 마음", sat: ["든든하다", "뿌듯하다"], unsat: ["걱정하다", "무섭다"], action: "식물을 돌보세요." },
-    { name: "희망", cat: "cat-peace", desc: "더 나은 내일에 대한 긍정적 믿음", sat: ["기대하다", "설레다"], unsat: ["좌절하다", "우울하다"], action: "작은 변화에 집중하세요." },
-    { name: "애도", cat: "cat-peace", desc: "상실을 슬퍼하고 정리하는 과정", sat: ["평온하다", "안도하다"], unsat: ["서럽다", "슬프다"], action: "편지를 써보세요." },
-    { name: "슬퍼하기", cat: "cat-peace", desc: "아픔을 정화하는 욕구", sat: ["후련하다", "편안하다"], unsat: ["괴롭다", "우울하다"], action: "마음껏 울어보세요." },
-    { name: "진실", cat: "cat-meaning", desc: "본질을 마주하고 싶은 욕구", sat: ["편안하다", "당당하다"], unsat: ["혼란스럽다", "억울하다"], action: "사실을 털어놓으세요." },
-    { name: "솔직함", cat: "cat-meaning", desc: "내면을 용기 있게 드러내고 싶은 마음", sat: ["자랑스럽다", "편안하다"], unsat: ["부끄럽다", "불편하다"], action: "마음을 표현하세요." },
-    { name: "도전", cat: "cat-meaning", desc: "새로운 성취를 맛보고 싶은 열정", sat: ["신나다", "기대하다"], unsat: ["두렵다", "막막하다"], action: "첫 단계를 실행하세요." },
-    { name: "배움", cat: "cat-meaning", desc: "깨달음을 얻고 싶은 욕구", sat: ["재미있다", "기대하다"], unsat: ["지루하다", "답답하다"], action: "새로 알게 된 것을 기록하세요." },
-    { name: "성취", cat: "cat-meaning", desc: "목표를 이루고 싶은 마음", sat: ["뿌듯하다", "자랑스럽다"], unsat: ["좌절하다", "실망하다"], action: "체크 표시를 하세요." },
-    { name: "보람", cat: "cat-meaning", desc: "행동이 가치 있음을 확인하고 싶은 마음", sat: ["뿌듯하다", "만족하다"], unsat: ["허탈하다", "무력하다"], action: "긍정적 영향들을 떠올리세요." },
-    { name: "기여", cat: "cat-meaning", desc: "사회에 긍정적 영향을 주고 싶은 바람", sat: ["뿌듯하다", "자랑스럽다"], unsat: ["허탈하다", "속상하다"], action: "봉사를 실천해 보세요." },
-    { name: "능력", cat: "cat-meaning", desc: "기술을 갖추고 싶은 욕구", sat: ["자랑스럽다", "든든하다"], unsat: ["위축되다", "부끄럽다"], action: "타인을 도와주세요." },
-    { name: "꿈", cat: "cat-meaning", desc: "이상적 가치를 실현하고 싶은 열망", sat: ["기대하다", "설레다"], unsat: ["막막하다", "좌절하다"], action: "계획을 세우세요." },
-    { name: "창조성", cat: "cat-meaning", desc: "생동감을 느끼고 싶은 욕구", sat: ["신나다", "설레다"], unsat: ["지루하다", "답답하다"], action: "일상에 변화를 시도하세요." },
-    { name: "자신감", cat: "cat-meaning", desc: "능력을 믿고 마주하고 싶은 에너지", sat: ["자랑스럽다", "신나다"], unsat: ["위축되다", "초조하다"], action: "기억 3가지를 되새기세요." },
-    { name: "자부심", cat: "cat-meaning", desc: "자신의 능력이나 성취, 존재 가치에 대해 스스로 당당하고 명예롭게 여기고 싶은 마음", sat: ["당당하다", "자랑스럽다", "충만하다"], unsat: ["초라하다", "부끄럽다", "위축되다"], action: "오늘 내가 해낸 작은 성과나 나의 긍정적인 면을 세 가지만 기록해보세요." },
-    { name: "축하", cat: "cat-meaning", desc: "기쁜 순간을 기리고 싶은 마음", sat: ["기쁘다", "감동하다"], unsat: ["서운하다", "속상하다"], action: "작은 보상을 선물하세요." },
-    { name: "존재감", cat: "cat-meaning", desc: "의미 있는 존재로 인식되고 싶은 마음", sat: ["자랑스럽다", "뿌듯하다"], unsat: ["위축되다", "허탈하다"], action: "당당히 드러내세요." },
-	{ name: "평온함", cat: "cat-meaning", desc: "마음이 동요 없이 고요하고 안녕한 상태", sat: ["평화롭다", "안온하다"], unsat: ["불안하다", "초조하다"],action: "숨을 깊게 고르며 이 순간을 음미하세요."}
+    {"name": "유능감","cat": "cat-auto","desc": "자신의 능력을 신뢰하고, 주어진 과제를 성공적으로 수행할 수 있다는 믿음과 성취감", "sat": ["성취감을 느끼다", "자랑스럽다", "자신감이 생긴다"], "unsat": ["무력감을 느끼다", "자신을 의심하다", "위축되다"], "action": "작은 성공을 경험할 수 있는 목표를 세우고, 이를 달성한 뒤 스스로를 칭찬해주세요." },
+    { name: "자유•자율성", cat: "cat-auto", desc: "외부의 압박 없이 자신의 가치와 신념에 따라 스스로 선택하고 행동하고 싶은 마음", sat: ["행복하다", "만족하다"], unsat: ["답답하다", "억울하다"], action: "나만의 시간을 확보하세요." },
+    { name: "공정함", cat: "cat-auto", desc: "노력한 만큼 정당한 대우를 받고, 치우침 없이 평등하게 다루어지길 바라는 욕구", sat: ["홀가분하다", "신뢰감을 느끼다"], unsat: ["억울하다", "분개하다"], action: "개인의 편견을 내려놓고 정해진 기준과 원칙에 따라 투명하게 대처해보세요." },
+    { name: "명확함", cat: "cat-auto", desc: "상황이나 정보, 상대의 의도를 왜곡 없이 투명하고 확실하게 알고 싶은 욕구", sat: ["홀가분하다", "편안하다"], unsat: ["혼란스럽다", "답답하다"], action: "모호한 짐작을 내려놓고, 구체적인 사실을 확인하거나 상대에게 명확한 질문을 건네보세요." },
+    { name: "선택", cat: "cat-auto", desc: "타인에게 휘둘리지 않고 나의 의지로 삶의 방향을 정하고 결정하고 싶은 마음", sat: ["자랑스럽다", "기쁘다"], unsat: ["답답하다", "억울하다"], action: "사소한 결정부터 직관에 따라 결정해 보세요." },
+    { name: "혼자만의 시간과 공간", cat: "cat-auto", desc: "타인의 시선에서 벗어나 온전히 나 자신과 마주하며 에너지를 채우고 싶은 욕구", sat: ["편안하다", "만족하다"], unsat: ["답답하다", "불편하다"], action: "아지트에서 1시간 동안 집중해 보세요." },
+    { name: "자기표현", cat: "cat-auto", desc: "나만의 고유한 생각, 감정, 개성을 외부로 솔직하게 드러내고 싶은 욕구", sat: ["기쁘다", "자랑스럽다"], unsat: ["답답하다", "부끄럽다"], action: "독창적인 생각을 기록해 보세요." },
+    { name: "자기주도", cat: "cat-auto", desc: "내 삶의 주인되어 행동과 선택의 과정을 스스로 이끌어가고 싶은 욕구", sat: ["자유롭다", "당당하다", "활기차다"], unsat: ["무력하다", "답답하다", "억울하다"], action: "오늘 내가 스스로 선택할 수 있는 작은 일 하나를 정해보세요." },
+    { name: "책임감", cat: "cat-auto", desc: "주어진 역할이나 행동의 결과에 대해 주체적으로 책임을 지고 완수하려는 의지", sat: ["뿌듯하다", "신뢰받다", "든든하다"], unsat: ["불안하다", "버겁다", "회피하고싶다"], action: "오늘 완수해야 할 작은 과제 하나를 정하고, 끝까지 마무리해보세요." },
+    { name: "우정", cat: "cat-conn", desc: "서로 아끼고 신뢰를 나누며 깊은 정서적 유대감을 쌓고 싶은 바람", sat: ["사랑스럽다", "든든하다"], unsat: ["서운하다", "외롭다"], action: "친구에게 안부를 물어보세요." },
+    { name: "공동체", cat: "cat-conn", desc: "집단에 속해 서로 돕고 기여하며 연결되어 있음을 느끼고 싶은 욕구", sat: ["뿌듯하다", "든든하다"], unsat: ["소외되다", "불안하다"], action: "이웃에게 가벼운 인사를 건네보세요." },
+    { name: "이해", cat: "cat-conn", desc: "나의 진심과 마음이 왜곡 없이 상대에게 정확히 전달되고 수용되기를 바라는 마음", sat: ["감동하다", "편안하다"], unsat: ["서운하다", "답답하다"], action: "소통의 오해를 확인해 보세요." },
+    { name: "존중", cat: "cat-conn", desc: "하나의 독립된 인격체로서 가치를 인정받고 소중히 다뤄지길 바라는 마음", sat: ["뿌듯하다", "든든하다"], unsat: ["억울하다", "속상하다"], action: "받고 싶은 대우를 요청하세요." },
+    { name: "상호존중", cat: "cat-conn", desc: "서로의 다름을 인정하고, 품격 있는 태도로 존재와 가치를 소중히 여기는 마음", sat: ["존중받다", "든든하다", "편안하다"], unsat: ["무시당하다", "불쾌하다", "비참하다"], action: "상대방의 말을 끝까지 듣고 비판 없이 수용하는 연습을 해보세요." },
+    { name: "관심", cat: "cat-conn", desc: "타인에게 소중한 존재로 여겨지고 내 존재가 긍정적으로 인식되기를 바라는 마음", sat: ["반갑다", "행복하다"], unsat: ["서운하다", "외롭다"], action: "나에 대해 질문해달라고 요청하세요." },
+    { name: "소통", cat: "cat-conn", desc: "서로의 생각과 느낌을 투명하게 주고받으며 깊은 연결을 맺고 싶은 욕구", sat: ["반갑다", "재미있다"], unsat: ["답답하다", "어색하다"], action: "끝까지 듣고 요약해 보세요." },
+    { name: "신뢰", cat: "cat-conn", desc: "서로를 의심 없이 믿고 의지할 수 있는 단단한 관계를 맺고 싶은 바람", sat: ["든든하다", "편안하다"], unsat: ["불안하다", "걱정하다"], action: "작은 도움을 요청해 보세요." },
+    { name: "협력", cat: "cat-conn", desc: "공통의 목표를 이루기 위해 서로 힘을 합치고 시너지를 내고 싶은 바람", sat: ["든든하다", "뿌듯하다"], unsat: ["답답하다", "귀찮다"], action: "상대에게 도움을 요청하세요." },
+    { name: "연결•친밀함", cat: "cat-conn", desc: "정서적으로 가까워져 깊은 유대감과 따뜻함을 나누고 싶은 욕구", sat: ["사랑스럽다", "설레다"], unsat: ["외롭다", "서운하다"], action: "눈을 맞추며 대화해 보세요." },
+    { name: "어울리기", cat: "cat-conn", desc: "타인과 즐겁게 섞여 사회적인 에너지를 가볍고 유쾌하게 나누고 싶은 바람", sat: ["신나다", "재미있다"], unsat: ["어색하다", "외롭다"], action: "가벼운 티타임에 참석하세요." },
+    { name: "인정", cat: "cat-conn", desc: "자신의 노력과 능력, 존재 가치를 타인으로부터 긍정적으로 평가받고 존중받고 싶은 욕구", sat: ["뿌듯하다", "자랑스럽다"], unsat: ["억울하다", "무기력하다"], action: "결과뿐만 아니라 노력한 과정에 대해 구체적으로 칭찬해주세요." },
+    { name: "공감", cat: "cat-conn", desc: "상대의 마음과 감정을 깊이 이해하고 내 것처럼 함께 느끼고 싶은 욕구", sat: ["감동하다", "따뜻하다"], unsat: ["외롭다", "서운하다"], action: "공감의 한마디를 건네보세요." },
+    { name: "포용", cat: "cat-conn", desc: "나의 부족함, 실수, 다름까지도 조건 없이 있는 그대로 받아들여지길 바라는 욕구", sat: ["안심되다", "든든하다"], unsat: ["위축되다", "소외감을 느끼다"], action: "상대의 판단이나 평가 없이 있는 그대로 수용하는 태도를 보여주세요." },
+    { name: "수용", cat: "cat-conn", desc: "나의 생각과 현재 모습이 왜곡이나 저항 없이 있는 그대로 인정받기를 바라는 욕구", sat: ["자유롭다", "편안하다"], unsat: ["답답하다", "거부당하다"], action: "상대의 이야기를 바꾸려 하거나 조언하려 하지 말고, '그랬구나' 하며 있는 그대로 비춰주세요." },
+    { name: "위로", cat: "cat-conn", desc: "슬픔이나 아픔으로 지친 마음을 타인이 알아주고 따뜻하게 다독여주길 바라는 욕구", sat: ["위안이 되다", "평온하다"], unsat: ["속상하다", "막막하다"], action: "상대의 힘든 마음을 묵묵히 들어주며 따뜻한 체온이나 가벼운 신체 접촉을 나눠보세요." },
+    { name: "마음알아주기", cat: "cat-conn", desc: "평가나 판단 없이 내 감정과 진심을 있는 그대로 알아봐 주길 바라는 욕구", sat: ["감동하다", "든든하다"], unsat: ["억울하다", "서럽다"], action: "감정의 이름을 불러주세요." },
+    { name: "소속감", cat: "cat-conn", desc: "특정 집단의 일원으로서 거부당하지 않고 안정을 느끼고 싶은 마음", sat: ["든든하다", "편안하다"], unsat: ["외롭다", "불안하다"], action: "작은 역할을 자원해 보세요." },
+    { name: "도움•지지", cat: "cat-conn", desc: "어렵고 힘든 순간에 기댈 수 있는 든든한 조력과 격려를 받고 싶은 마음", sat: ["든든하다", "감사하다"], unsat: ["막막하다", "서럽다"], action: "명확히 도움을 요청하세요." },
+    { name: "나눔", cat: "cat-conn", desc: "내가 가진 물질적, 정서적 가치를 대가 없이 전달하며 기쁨을 얻고 싶은 마음", sat: ["행복하다", "뿌듯하다"], unsat: ["속상하다", "허탈하다"], action: "깜짝 선물을 해보세요." },
+    { name: "배려", cat: "cat-conn", desc: "타인의 상황과 형편을 세심하게 살피고 마음을 쓰고 싶은 따뜻한 성품", sat: ["뿌듯하다", "따뜻하다"], unsat: ["속상하다", "서운하다"], action: "주변 필요를 살펴보세요." },
+    { name: "정서적 배려", cat: "cat-conn", desc: "자신과 타인의 감정 상태를 세심하게 살피며 안전하게 연결되고 싶은 마음", sat: ["따뜻하다", "연결되다", "안심하다"], unsat: ["서운하다", "외롭다", "단절되다"], action: "상대방의 감정 단어에 귀를 기울이고 공감의 한마디를 건네보세요." },
+    { name: "보살핌", cat: "cat-conn", desc: "소중한 대상을 따뜻하게 돌보거나, 누군가로부터 돌봄을 받고 싶은 본능적 마음", sat: ["사랑스럽다", "든든하다"], unsat: ["외롭다", "불안하다"], action: "나 자신을 돌보세요." },
+    { name: "사랑", cat: "cat-conn", desc: "존재 자체를 아끼고 소중히 여기며 조건 없이 베풀고 받고 싶은 강력한 에너지", sat: ["사랑스럽다", "행복하다"], unsat: ["슬프다", "서럽다"], action: "사랑해라고 전하세요." },
+    {"name": "안정감","cat": "cat-conn","desc": "예측 가능한 환경과 신뢰 속에서 심리적으로 흔들림 없이 평온함을 유지하고 싶은 욕구","sat": ["편안하다", "차분하다"],"unsat": ["불안하다", "초조하다"],"action": "일관된 태도와 행동으로 예측 가능한 환경을 제공하고 신뢰를 쌓아주세요."},
+    {"name": "정서적 안정","cat": "cat-conn","desc": "감정의 기복을 너그럽게 이해받고, 자신의 내면이 존중받으며 심리적인 평화를 누리고 싶은 욕구","sat": ["평온하다", "안온하다"],"unsat": ["불안정하다", "예민해지다"],"action": "감정의 변화를 있는 그대로 경청하며, 따뜻한 위로와 지지를 보내주세요."},
+    { name: "공기", cat: "cat-well", desc: "맑고 깨끗한 숨을 통해 몸을 정화하고 생명을 유지하는 필수적인 에너지", sat: ["편안하다", "만족하다"], unsat: ["답답하다", "괴롭다"], action: "심호흡을 하세요." },
+    { name: "음식•주거", cat: "cat-well", desc: "안정적인 삶의 기반을 다지고 신체 에너지를 얻고 싶은 생존의 욕구", sat: ["든든하다", "편안하다"], unsat: ["불안하다", "걱정하다"], action: "건강한 한 끼를 드세요." },
+    { name: "건강", cat: "cat-well", desc: "몸과 마음이 질병 없이 활기차고 정상적으로 기능하기를 바라는 상태", sat: ["행복하다", "만족하다"], unsat: ["우울하다", "걱정하다"], action: "물 한 잔을 마셔보세요." },
+    { name: "휴식", cat: "cat-well", desc: "지친 몸과 마음의 긴장을 풀고 에너지를 재충전하고 싶은 욕구", sat: ["편안하다", "만족하다"], unsat: ["피곤하다", "짜증나다"], action: "10분간 멈춰보세요." },
+    { name: "잠", cat: "cat-well", desc: "하루 동안 소모된 육체적, 정신적 피로를 완전히 회복시키는 필수 조건", sat: ["편안하다", "만족하다"], unsat: ["피곤하다", "예민하다"], action: "스마트폰을 멈추세요." },
+    { name: "재미", cat: "cat-well", desc: "단조로운 일상에서 벗어나 신선하고 유쾌한 자극을 즐기고 싶은 욕구", sat: ["신나다", "재미있다"], unsat: ["지루하다", "답답하다"], action: "취미 활동을 하세요." },
+    { name: "놀이", cat: "cat-well", desc: "어떠한 목적이나 부담 없이, 순수한 즐거움 자체를 느끼는 모든 활동", sat: ["신나다", "재미있다"], unsat: ["지루하다", "답답하다"], action: "어린아이처럼 낙서하세요." },
+    { name: "운동", cat: "cat-well", desc: "몸을 역동적으로 움직여 체력을 기르고 활발한 에너지를 발산하고 싶은 욕구", sat: ["신나다", "만족하다"], unsat: ["피곤하다", "무기력하다"], action: "15분간 산책하세요." },
+    { name: "편안함", cat: "cat-well", desc: "아무런 불안이나 불편함 없이 몸과 마음이 이완되어 안정을 찾은 상태", sat: ["편안하다", "만족하다"], unsat: ["불안하다", "불편하다"], action: "편한 옷을 입으세요." },
+    { name: "회복", cat: "cat-well", desc: "소모되거나 손상된 에너지를 원래의 건강한 균형태로 되돌리고 싶은 욕구", sat: ["뿌듯하다", "편안하다"], unsat: ["무기력하다", "괴롭다"], action: "자연 속으로 나가보세요." },
+    { name: "예측가능성", cat: "cat-peace", desc: "앞으로 일어날 상황을 미리 파악하여 심리적 안정을 얻고 싶은 욕구", sat: ["편안하다", "든든하다"], unsat: ["불안하다", "당황하다"], action: "루틴을 만드세요." },
+    { name: "일관성", cat: "cat-peace", desc: "언행의 앞뒤가 맞고 변함이 없어 굳건한 신뢰를 유지하고 싶은 바람", sat: ["든든하다", "편안하다"], unsat: ["당황하다", "혼란스럽다"], action: "작은 약속부터 지키세요." },
+    { name: "믿음", cat: "cat-peace", desc: "내면의 흔들림을 잡아주는 단단한 가치관이나 신념을 지키고 싶은 마음", sat: ["든든하다", "평온하다"], unsat: ["불안하다", "막막하다"], action: "힘이 되는 문구를 읽으세요." },
+    { name: "여유", cat: "cat-peace", desc: "조급함 없이 현재의 순간을 온전히 음미할 수 있는 마음의 공간", sat: ["행복하다", "만족하다"], unsat: ["초조하다", "긴장하다"], action: "일정 사이에 여백을 두세요." },
+    { name: "조화", cat: "cat-peace", desc: "주변 환경이나 타인과 갈등 없이 균형을 이루고 싶은 평화로운 상태", sat: ["평온하다", "만족하다"], unsat: ["불편하다", "어색하다"], action: "제3의 길을 질문하세요." },
+    { name: "감사", cat: "cat-peace", desc: "삶에서 주어진 소중함과 고마움을 깊이 느끼고 표현하고 싶은 욕구", sat: ["행복하다", "따뜻하다"], unsat: ["속상하다", "허탈하다"], action: "3가지를 기록하세요." },
+    { name: "평등", cat: "cat-peace", desc: "차별 없이 누구에게나 균등한 기회와 정당한 대우가 주어지길 바라는 마음", sat: ["편안하다", "만족하다"], unsat: ["분하다", "억울하다"], action: "의견을 정중히 밝히세요." },
+    { name: "평화", cat: "cat-peace", desc: "분쟁이나 소음 없이 외부와 내면이 고요하고 조화로운 상태", sat: ["편안하다", "행복하다"], unsat: ["불안하다", "짜증나다"], action: "명상을 해보세요." },
+    { name: "안전", cat: "cat-peace", desc: "위험이나 위협으로부터 신체적, 정신적으로 보호받고 싶은 원초적 욕구", sat: ["편안하다", "든든하다"], unsat: ["두렵다", "무섭다"], action: "안전한 사람을 떠올리세요." },
+    { name: "보호", cat: "cat-peace", desc: "소중한 가치, 사람, 환경을 외부의 위험으로부터 안전하게 지키고 싶은 마음", sat: ["든든하다", "뿌듯하다"], unsat: ["걱정하다", "무섭다"], action: "식물을 돌보세요." },
+    { name: "희망", cat: "cat-peace", desc: "지금보다 더 나은 내일이 올 것이라는 긍정적이고 밝은 믿음", sat: ["기대하다", "설레다"], unsat: ["좌절하다", "우울하다"], action: "작은 변화에 집중하세요." },
+    { name: "애도", cat: "cat-peace", desc: "소중한 존재의 상실을 충분히 슬퍼하고 마음을 건강하게 정리하는 과정", sat: ["평온하다", "안도하다"], unsat: ["서럽다", "슬프다"], action: "편지를 써보세요." },
+    { name: "슬퍼하기", cat: "cat-peace", desc: "내면의 아픔을 억누르지 않고 눈물 등으로 정화하고 싶은 솔직한 욕구", sat: ["후련하다", "편안하다"], unsat: ["괴롭다", "우울하다"], action: "마음껏 울어보세요." },
+    { name: "진실", cat: "cat-meaning", desc: "거짓 없이 사물의 본질이나 실제 사실을 있는 그대로 마주하고 싶은 욕구", sat: ["편안하다", "당당하다"], unsat: ["혼란스럽다", "억울하다"], action: "사실을 털어놓으세요." },
+    { name: "솔직함", cat: "cat-meaning", desc: "꾸밈이나 숨김없이 자신의 내면을 용기 있게 드러내고 싶은 마음", sat: ["자랑스럽다", "편안하다"], unsat: ["부끄럽다", "불편하다"], action: "마음을 표현하세요." },
+    { name: "도전", cat: "cat-meaning", desc: "현실에 안주하지 않고 새로운 성취를 위해 위험을 감수하고 싶은 열정", sat: ["신나다", "기대하다"], unsat: ["두렵다", "막막하다"], action: "첫 단계를 실행하세요." },
+    { name: "배움", cat: "cat-meaning", desc: "새로운 지식이나 깨달음을 얻어 지적으로 성장하고 싶은 깊은 욕구", sat: ["재미있다", "기대하다"], unsat: ["지루하다", "답답하다"], action: "새로 알게 된 것을 기록하세요." },
+    { name: "성취", cat: "cat-meaning", desc: "목표한 바를 끝까지 해내어 스스로 결과물을 만들어내고 싶은 마음", sat: ["뿌듯하다", "자랑스럽다"], unsat: ["좌절하다", "실망하다"], action: "체크 표시를 하세요." },
+    { name: "보람", cat: "cat-meaning", desc: "내가 한 행동이 가치 있고 의미 있는 일이었음을 확인하고 싶은 마음", sat: ["뿌듯하다", "만족하다"], unsat: ["허탈하다", "무력하다"], action: "긍정적 영향들을 떠올리세요." },
+    { name: "기여", cat: "cat-meaning", desc: "내 능력이나 행동을 통해 사회나 타인에게 긍정적인 영향을 주고 싶은 바람", sat: ["뿌듯하다", "자랑스럽다"], unsat: ["허탈하다", "속상하다"], action: "봉사를 실천해 보세요." },
+    { name: "능력", cat: "cat-meaning", desc: "어떤 일을 탁월하게 해낼 수 있는 기술과 역량을 탄착히 갖추고 싶은 욕구", sat: ["자랑스럽다", "든든하다"], unsat: ["위축되다", "부끄럽다"], action: "타인을 도와주세요." },
+    { name: "꿈", cat: "cat-meaning", desc: "자신이 바라는 이상적인 가치나 미래의 목표를 실현하고 싶은 간절한 열망", sat: ["기대하다", "설레다"], unsat: ["막막하다", "좌절하다"], action: "계획을 세우세요." },
+    { name: "창조성", cat: "cat-meaning", desc: "틀에 박힌 것에서 벗어나 새로운 생각이나 결과물을 만들어내고 싶은 욕구", sat: ["신나다", "설레다"], unsat: ["지루하다", "답답하다"], action: "일상에 변화 시도하세요." },
+    { name: "자신감", cat: "cat-meaning", desc: "자신의 능력을 신뢰하며 어떤 일에도 당당하게 마주하고 싶은 내면의 에너지", sat: ["자랑스럽다", "신나다"], unsat: ["위축되다", "초조하다"], action: "기억 3가지를 되새기세요." },
+    { name: "자부심", cat: "cat-meaning", desc: "자신의 성취와 존재 가치에 대해 스스로 당당하고 명예롭게 여기고 싶은 마음", sat: ["당당하다", "자랑스럽다", "충만하다"], unsat: ["초라하다", "부끄럽다", "위축되다"], action: "오늘 내가 해낸 작은 성과나 나의 긍정적인 면을 세 가지만 기록해보세요." },
+    { name: "축하", cat: "cat-meaning", desc: "이뤄낸 결실이나 기쁜 순간을 기리며 기쁨을 널리 나누고 싶은 마음", sat: ["기쁘다", "감동하다"], unsat: ["서운하다", "속상하다"], action: "작은 보상을 선물하세요." },
+    { name: "존재감", cat: "cat-meaning", desc: "어디서나 소외되지 않고 가치 있고 의미 있는 존재로 뚜렷하게 인식되고 싶은 마음", sat: ["자랑스럽다", "뿌듯하다"], unsat: ["위축되다", "허탈하다"], action: "당당히 드러내세요." },
+    { name: "평온함", cat: "cat-meaning", desc: "마음의 동요나 불안 없이 고요하고 안녕한 상태를 지속하고 싶은 욕구", sat: ["평화롭다", "안온하다"], unsat: ["불안하다", "초조하다"], action: "숨을 깊게 고르며 이 순간을 음미하세요." }
+];
+
+const judgmentData = [
+  { name: "가소롭다", cat: "cat-low", desc: "상대의 어설픈 시도가 나의 기준에 한참 미치지 못해 우스워 보임", sit: "경험 없는 사람이 큰소리칠 때", body: "입꼬리가 살짝 올라가며 코웃음이 나옴", aff: "나 또한 누군가의 가르침으로 성장했음을 기억하기" },
+  { name: "같잖다", cat: "cat-low", desc: "상대가 상황에 맞지 않는 언행으로 자신을 과대평가하고 있음", sit: "자기 객관화가 안 된 사람의 조언을 들을 때", body: "미간이 좁혀지고 눈매가 가늘어짐", aff: "상대가 왜 인정받고 싶어 하는지 그 결핍에 집중하기" },
+  { name: "하찮다", cat: "cat-low", desc: "상대의 말이나 행동이 나의 삶에 아무런 가치나 의미가 없다고 단정함", sit: "불필요한 참견이나 비난을 들을 때", body: "고개를 살짝 돌리며 시선을 회피함", aff: "나의 에너지를 지키기 위한 거리두기임을 인정하기" },
+  { name: "부족하다", cat: "cat-low", desc: "상대의 결과물이 내가 설정한 기대치와 기준에 미치지 못함", sit: "팀 프로젝트의 결과물이 실망스러울 때", body: "깊은 한숨과 함께 어깨가 처짐", aff: "과정 중에 있을 상대의 노력을 먼저 격려하기" },
+  { name: "어설프다", cat: "cat-low", desc: "상대의 준비가 부족하여 일을 그르칠 것이라고 미리 판단함", sit: "서투른 일 처리를 지켜볼 때", body: "답답함에 마른세수를 하거나 혀를 참", aff: "누구나 서툰 첫걸음이 있음을 받아들이기" },
+  { name: "한심하다", cat: "cat-low", desc: "상대의 태도가 나태하거나 변화 의지가 없다고 느껴짐", sit: "같은 실수를 반복하는 모습을 볼 때", body: "시선이 아래로 향하며 턱을 괸다", aff: "내가 판단하고 있는 상대의 모습이 나의 투영은 아닌지 살피기" },
+  { name: "무능하다", cat: "cat-low", desc: "성과를 내지 못하는 상대의 능력 자체를 부정적으로 평가함", sit: "성과를 내지 못하고 핑계만 댈 때", body: "표정이 굳어지고 차가운 말투가 나옴", aff: "사람의 가치는 생산성으로만 결정되지 않음을 되새기기" },
+  { name: "무식하다", cat: "cat-low", desc: "상대방의 지식이나 상식이 부족하다고 판단하여 깎아내림", sit: "상대방이 기본적인 것을 모르거나 비논리적인 주장을 고집할 때", body: "한숨을 깊게 쉬거나 어이없다는 듯 헛웃음을 지음", aff: "사람마다 경험과 지식의 분야가 다름을 인정하고 존중하기" },
+  { name: "잔망스럽다", cat: "cat-low", desc: "상대방의 행동이나 말씨가 얄밉고 가벼우며 교묘하다고 느낌", sit: "상황에 맞지 않게 촐싹거리거나 얄미운 변명으로 상황을 모면하려 할 때", body: "눈살을 찌푸리거나 차가운 시선으로 응시함", aff: "상대의 가벼운 태도에 휘둘리지 않고 내 마음의 중심을 지키기" },
+  { name: "미숙하다", cat: "cat-low", desc: "경험의 부재로 인해 발생하는 실수를 무능함으로 치부함", sit: "사소한 업무 실수를 할 때", body: "비웃음 섞인 미소와 함께 경멸적인 태도", aff: "경험은 시행착오를 통해 쌓이는 것임을 인정하기" },
+  { name: "오만하다", cat: "cat-low", desc: "상대가 자신의 성취를 지나치게 과시하여 눈살이 찌푸려짐", sit: "상대가 지속적으로 잘난 척을 할 때", body: "방어적으로 팔짱을 끼고 몸을 뒤로 뺌", aff: "상대의 오만함 뒤에 숨겨진 불안을 들여다보기" },
+  { name: "속물적이다", cat: "cat-low", desc: "상대가 정신적 가치보다 물질적 이익만을 우선시한다고 느낌", sit: "이익 앞에서 태도가 180도 바뀔 때", body: "비난 섞인 시선과 차가운 침묵", aff: "생존을 위한 치열한 현실 감각을 이해해보려 노력하기" },
+  { name: "가식적이다", cat: "cat-low", desc: "상대의 태도가 진심이 아닌 연기처럼 느껴짐", sit: "상대방의 눈빛과 말에 온도 차이가 느껴지고, 가식적인 웃음이나 칭찬이 반복될 때", body: "상대에게 정서적 거리감을 두며 무의식적으로 팔짱을 끼거나 뒤로 물러남", aff: "상대방이 가면 뒤에 숨겨둔 진짜 마음을 읽어내어, 그가 진정으로 보호받고 인정받고 싶은 욕구를 헤아리기" },
+  { name: "꼴사납다", cat: "cat-low", desc: "상대방의 행동이나 태도, 겉모습 등이 보기에 흉하거나 몹시 거슬린다고 평가함", sit: "분수에 맞지 않게 허세를 부리거나, 눈치 없이 무례한 행동을 뻔뻔하게 할 때", body: "시선을 회피하거나 미간을 찌푸리며 노골적으로 불쾌한 기색을 드러냄", aff: "타인의 볼썽사나운 모습에 내 감정을 소모하기보다 마음의 평온을 먼저 돌보기" },
+  { name: "비굴하다", cat: "cat-low", desc: "자신의 가치를 스스로 깎아내리며 과도하게 굽실거림", sit: "정당한 이유 없이 타인의 비위를 맞추거나 부당한 대우를 받으면서도 눈치를 살피는 모습을 볼 때", body: "상대의 모습에서 안타까움과 애처로움을 느껴 어깨가 무겁게 처짐", aff: "상대 내면에 잠재된 당당함과 존엄에 대한 열망을 확인하고, 스스로를 귀하게 여길 수 있도록 돕기" },
+  { name: "경망스럽다", cat: "cat-low", desc: "상황에 맞지 않게 언행이 가볍고 진지함이 결여됨", sit: "모두가 신중해야 할 중요한 순간에 농담을 던지거나 분위기를 깨뜨리는 가벼운 행동을 할 때", body: "자신도 모르게 눈살이 찌푸려지고 한숨이 깊어짐", aff: "상대에게 여유와 진중함의 균형을 찾도록 유도하며, 상황의 무게를 함께 공유하는 법 익히기" },
+  { name: "냉소적이다", cat: "cat-low", desc: "상대의 호의나 진심 어린 조언을 비아냥으로 받아침", sit: "도움을 주려는 시도를 삐딱한 시선으로 보거나, 공격적인 말로 상대를 밀어낼 때", body: "상대를 방어하듯 어깨를 움츠리며 소통의 문을 닫으려 함", aff: "냉소라는 방어기제 이면에 숨겨진 상대의 상처와 고통을 이해하고 따뜻한 공감을 건네기" },
+  { name: "깐깐하다", cat: "cat-low", desc: "융통성 없는 태도로 타인의 사소한 실수를 용납하지 않음", sit: "완벽주의적인 잣대를 들이대며 아주 작은 부분까지 집요하게 문제 삼을 때", body: "상대의 엄격함에 에너지가 빠르게 소진되어 극심한 피로감을 느낌", aff: "상대가 추구하는 안전과 질서의 욕구를 인정해주되, 유연함의 가치를 함께 대화로 풀어나가기" },
+  { name: "무신경하다", cat: "cat-low", desc: "타인의 고통이나 상황에 전혀 공감하지 못하고 무관심함", sit: "상대가 도움이 필요한 상황임을 알면서도 모른 척하거나 배려 없는 태도를 보일 때", body: "관계 속에서 깊은 공허함과 단절감을 느끼며 가슴이 먹먹해짐", aff: "상대의 변화를 기다리기보다, 나의 필요와 감정을 구체적으로 직접 표현하여 소통하기" },
+  { name: "수동적이다", cat: "cat-low", desc: "자기 주관 없이 타인의 결정에만 의존하며 책임을 피함", sit: "중요한 선택의 순간에 자신의 의견을 내지 않고 시키는 대로만 하려 할 때", body: "상대의 무책임함에 답답함이 치밀어 올라 호흡이 가빠짐", aff: "스스로 결정하는 것의 중요성을 일깨우고, 선택에 따른 책임을 지는 연습을 장려하기" },
+  { name: "오지랖 넓다", cat: "cat-low", desc: "선 넘는 참견으로 타인의 사생활과 경계를 침범함", sit: "상대방의 영역에 허락 없이 깊숙이 들어와 가르치려 들거나 간섭할 때", body: "불쾌함이 머리끝까지 차올라 근육이 긴장되고 얼굴이 달아오름", aff: "나만의 건강한 경계(Boundaries)를 설정하고, 상대가 나의 영역을 존중하도록 분명히 선을 긋기" },
+  { name: "변덕스럽다", cat: "cat-low", desc: "판단이나 기분이 일관성 없이 계속해서 바뀜", sit: "어제와 오늘 말이 다르고, 기분에 따라 관계의 태도가 극단적으로 달라질 때", body: "예측 불가능한 상황에 어지러움과 깊은 혼란을 느낌", aff: "상대의 변덕 이면에 있는 불안함을 수용하되, 약속의 일관성을 유지하기 위한 타협점 찾기" },
+  { name: "독단적이다", cat: "cat-low", desc: "자기 방식만을 고집하며 타인의 생각을 원천 차단함", sit: "협업하는 과정에서 내 준의견을 완전히 배제하고 자신의 논리만 일방적으로 주장할 때", body: "존중받지 못했다는 생각에 가슴 속에서 끓어오르는 분노를 느낌", aff: "우리는 평등한 파트너임을 상기시키고, 상대의 경청과 존중의 태도를 요구하기" },  
+  { name: "어처구니없다", cat: "cat-irr", desc: "논리적으로 도저히 설명되지 않는 상황에 당혹감을 느낌", sit: "말도 안 되는 억지를 부릴 때", body: "입이 벌어지며 할 말을 잃음", aff: "상황을 통제하려는 마음을 내려놓고 현상 유지하기" },
+  { name: "황당하다", cat: "cat-irr", desc: "예상치 못한 비상식적 요구에 당황함", sit: "갑작스러운 무리한 부탁을 받을 때", body: "어이없는 실소와 함께 고개를 저음", aff: "나의 기준과 다를 수 있음을 인정하고 침착함 유지하기" },
+  { name: "기가 차다", cat: "cat-irr", desc: "상식의 범주를 너무 많이 벗어나 대응할 가치조차 못 느낌", sit: "몰상식한 행동을 목격했을 때", body: "허탈한 표정으로 멍하니 상대를 응시", aff: "내 마음의 평화를 깨뜨리지 않도록 의연해지기" },
+  { name: "터무니없다", cat: "cat-irr", desc: "현실성이 전혀 없는 계획이나 말을 들었을 때 느껴지는 불신", sit: "근거 없는 자신감을 보일 때", body: "머리를 가로저으며 반박할 준비를 함", aff: "상대의 창의적인 사고를 비판하기보다 맥락을 파악하기" },
+  { name: "이해 불가", cat: "cat-irr", desc: "소통이 전혀 되지 않아 답답함이 극에 달함", sit: "벽과 대화하는 느낌이 들 때", body: "팔짱을 끼고 고개를 돌려버림", aff: "모든 사람을 이해할 필요는 없음을 수용하기" },
+  { name: "비상식적이다", cat: "cat-irr", desc: "기본적인 예의나 상식을 지키지 않는 태도에 분노함", sit: "공공장소에서 무례한 행동을 볼 때", body: "경직된 표정과 날카로운 눈빛", aff: "타인의 기준은 나와 다를 수 있음을 염두에 두기" },
+  { name: "어이없다", cat: "cat-irr", desc: "너무나 황당하여 화조차 나지 않는 상태", sit: "말도 안 되는 실수로 남에게 피해를 줄 때", body: "헛웃음을 터뜨리며 힘이 빠짐", aff: "상황의 복잡성을 인정하고 감정을 분리하기" },
+  { name: "괴상하다", cat: "cat-irr", desc: "정상적인 범위에서 벗어난 행동이 기괴하게 느껴짐", sit: "상식 밖의 기행을 볼 때", body: "의아한 눈빛으로 상대를 살핌", aff: "다양한 인간상의 하나로 받아들이기" },
+  { name: "무례하다", cat: "cat-irr", desc: "상대가 넘지 말아야 할 선을 넘어 불쾌함", sit: "함부로 반말하거나 비아냥댈 때", body: "분노로 인해 얼굴이 상기됨", aff: "나의 경계를 명확히 밝히되 예의 있게 대응하기" },
+  { name: "제멋대로다", cat: "cat-irr", desc: "타인의 상황이나 입장을 배려하지 않고 자기중심적으로 행동하여 답답하고 화가 남", sit: "사전 상의 없이 일방적으로 계획을 바꾸거나 공동의 규칙을 무시할 때", body: "어이가 없어 깊은 한숨이 나오거나 미간이 찌푸려짐", aff: "감정에 휩쓸리지 않고 객관적인 사실과 정해진 규칙을 바탕으로 단호하게 짚어주기" },
+  { name: "답답하다", cat: "cat-irr", desc: "의사소통이 막혀 가슴이 막히는 것 같은 느낌", sit: "설득이 전혀 안 되는 사람과 대화할 때", body: "가슴을 두드리거나 깊은 숨을 내쉼", aff: "더 이상 논쟁하기보다 잠시 대화를 멈추기" },
+  { name: "얄밉다", cat: "cat-irr", desc: "타인의 얌체 같은 행동이 공정함에 어긋나 보여 은근히 미움이 생기는 거부감", sit: "책임을 회피하며 이득만 챙기는 이를 볼 때", body: "코웃음이 나거나눈매가 가늘어지며 혀를 차게 됨", aff: "타인에게 휘둘리지 않고 품위를 유지합니다." },
+  { name: "못마땅하다", cat: "cat-res", desc: "상대의 방식이 나의 가치관과 달라 계속 신경이 쓰임", sit: "업무 스타일이 나와 맞지 않을 때", body: "어깨에 힘이 들어가고 미간이 좁아짐", aff: "다른 방식이 결과적으로 더 나을 수도 있음을 고려하기" },
+  { name: "거슬린다", cat: "cat-res", desc: "사소한 행동 하나하나가 눈에 띄어 불편함", sit: "습관이나 말투가 취향에 안 맞을 때", body: "계속 쳐다보며 눈을 찌푸림", aff: "상대의 다름을 인정하는 관용 연습하기" },
+  { name: "고집스럽다", cat: "cat-res", desc: "상대가 자기 방식만 고집하여 유연성이 없다고 느낌", sit: "타협점을 찾지 못할 때", body: "턱을 꼿꼿이 세우고 경직된 자세", aff: "고집 뒤에 숨은 상대의 불안과 방어 기제 읽기" },
+  { name: "이기적이다", cat: "cat-res", desc: "상대가 공동체보다 자기 이익을 우선하여 서운함", sit: "손해 보는 상황을 마주할 때", body: "냉담한 눈빛과 차가운 말투", aff: "상대 또한 자신을 보호하려는 마음임을 이해하기" },
+  { name: "편협하다", cat: "cat-res", desc: "상대의 생각이 좁고 아집에 갇혀 있다고 판단함", sit: "융통성 없는 주장을 들을 때", body: "답답함에 입을 꾹 다뭂", aff: "나의 시야 또한 편협하지 않은지 돌아보기" },
+  { name: "불만스럽다", cat: "cat-res", desc: "기대했던 결과나 상황이 아니라서 마음이 불편함", sit: "성과가 기준에 도달하지 못했을 때", body: "입술을 내밀고 투덜거림", aff: "요청사항을 구체적으로 전달하여 개선방안 찾기" },
+  { name: "위선적이다", cat: "cat-res", desc: "겉과 속이 다른 모습에 배신감과 경멸을 느낌", sit: "앞뒤가 다른 행동을 볼 때", body: "냉소적인 비웃음", aff: "사람은 누구나 생존을 위해 가면을 씀을 인정하기" },
+  { name: "냉정하다", cat: "cat-res", desc: "공감이 결여된 태도에 상처받거나 거리감을 느낌", sit: "감정적인 교류를 거부할 때", body: "무표정으로 감정을 완전히 차단함", aff: "냉정함 속에 숨겨진 상처를 보호하려는 마음 찾기" },
+  { name: "무책임하다", cat: "cat-res", desc: "자신의 역할을 방기하는 모습에 분노함", sit: "중요한 약속을 지키지 않을 때", body: "분노가 섞인 날 선 목소리", aff: "책임감의 무게가 사람마다 다를 수 있음을 헤아리기" },
+  { name: "게으르다", cat: "cat-res", desc: "나태한 모습이 나의 근면한 가치관과 충돌함", sit: "행동이 느리거나 회피하는 모습을 볼 때", body: "판단 섞인 눈빛으로 상대의 동작을 주시함", aff: "상대에게 필요한 것은 휴식일지도 모름을 수용하기" },
+  { "name": "불공평하다", "cat": "cat-res", "desc": "조건이나 대우가 평등하지 않아 느껴지는 부당함과 그로 인한 불만족스러운 감정", "sit": "똑같은 노력을 했음에도 차별받거나 기회의 균등이 보장되지 않았을 때", "body": "심박수가 빨라지고 가슴이 답답하며 미간이 찌푸려짐", "aff": "모두에게 공정한 기회가 주어지길 바랍니다." },
+  { name: "실망스럽다", cat: "cat-res", desc: "상대가 내 기대치에 한참 못 미치는 행동을 함", sit: "중요한 약속을 가볍게 여기거나 신뢰를 저버리는 결과를 보일 때", body: "모든 기운이 빠지는 듯한 깊은 한숨이 나옴", aff: "상대에 대한 기대를 막연 실망으로 두지 말고, 내가 진정으로 원하는 욕구로 변환하여 표현하기" },
+  { name: "허무하다", cat: "cat-res", desc: "쏟은 노력에 비해 결과가 없거나 아무런 의미를 찾지 못함", sit: "열심히 달렸으나 목표가 사라졌거나, 과정 자체가 무의미하게 느껴질 때", body: "온몸의 힘이 빠져 축 처지고 세상과 분리된 듯한 느낌", aff: "결과에 대한 집착을 내려놓고, 지금 이 순간 내가 하고 있는 행위 그 자체에 몰입하기" },
+  { name: "비현실적이다", cat: "cat-res", desc: "꿈만 꾸고 실현 가능한 구체적인 방안은 없음", sit: "실행 계획 없이 이상적인 이야기만 늘어놓으며 현실을 무시할 때", body: "실소가 터져 나오며 코웃음을 치게 됨", aff: "꿈을 비난하기보다 현실이라는 땅에 발을 붙일 수 있도록 실천 가능한 다리를 놓아주기" },
+  { name: "지루하다", cat: "cat-res", desc: "새로운 자극이 없고 반복되는 일상에 무감각해짐", sit: "의미 없는 대화가 계속되거나 발전 없는 상황이 지속될 때", body: "계속되는 하품과 함께 몸이 나른하고 무기력해짐", aff: "현재의 정체 상태를 인지하고, 삶에 새로운 활력을 불어넣을 작은 도전이나 취미 탐색하기" },
+  { name: "옹졸하다", cat: "cat-res", desc: "마음의 그릇이 작아 사소한 일에 집착하고 예민하게 반응함", sit: "별것도 아닌 작은 일을 크게 부풀려 삐치거나 화를 낼 때", body: "상대의 유치함에 냉소적인 태도가 생기고 마음이 차가워짐", aff: "상대의 성숙도가 아직 부족함을 인정하고, 어른스러운 포용력으로 상황을 너그럽게 넘기기" },
+  { name: "철없다", cat: "cat-res", desc: "상황의 경중을 파악하지 못하고 미숙하게 행동함", sit: "장소나 상황에 맞지 않는 발언이나 철없는 행동으로 분위기를 흐릴 때", body: "상대가 한심하게 느껴져 눈을 어디에 둬야 할지 모르겠음", aff: "상대를 비난하기보다 현재 그의 성장의 발달 단계를 인정하고, 천천히 성숙해질 시간을 기다려주기" },
+  { name: "미련하다", cat: "cat-res", desc: "효율적인 방법을 찾지 못하고 고집스럽게 고생만 함", sit: "쉬운 길을 두고 스스로 고생을 사서 하거나, 변화를 거부하고 정체될 때", body: "상대의 답답한 대처 방식에 가슴이 턱 막히는 기분", aff: "상대의 고집을 깨려 하기보다, 지혜를 나누는 대화를 통해 더 효율적인 대안을 함께 고민하기" },
+  { name: "무기력하다", cat: "cat-res", desc: "의욕이 전혀 없고 스스로 상황을 개선하려 하지 않음", sit: "적극적인 제안이나 도움의 손길을 거절하고 침묵으로 일관할 때", body: "방관하는 상대의 모습에 나까지 의욕을 잃고 멀어지게 됨", aff: "상대의 내적 에너지가 회복될 때까지 기다려주고, 그 속도를 존중해주기" },
+  { name: "비겁하다", cat: "cat-res", desc: "진실을 마주하기 두려워 변명이나 회피로 일관함", sit: "잘못을 인정해야 할 순간에 자기방어적인 변명만 늘어놓을 때", body: "상대의 비겁한 태도에 마음이 차갑게 식고 냉담해짐", aff: "상대의 두려움을 읽어주고, 진실을 마주할 용기가 그에게 있음을 일깨워주기" },
+  { name: "혐오스럽다", cat: "cat-neg", desc: "상대의 존재나 행동이 나의 가치관을 뿌리째 흔듦", sit: "비도덕적인 상황을 마주할 때", body: "몸을 뒤로 물리며 움츠림", aff: "나를 보호하기 위한 건강한 거리두기 연습" },
+  { name: "악의적이다", cat: "cat-neg", desc: "상대가 고의적으로 나를 해치려 한다고 단정함", sit: "부당한 공격을 받을 때", body: "즉각적인 방어 기제 작동", aff: "상대의 고통이 왜 나에게 투사되는지 생각하기" },
+  { name: "질린다", cat: "cat-neg", desc: "상대의 반복되는 행동으로 인해 인내심이 바닥남", sit: "변하지 않는 상대의 모습을 볼 때", body: "깊은 한숨과 함께 대화 단절", aff: "관계를 지속할지, 경계를 설정할지 결정하기" },
+  { name: "불쾌하다", cat: "cat-neg", desc: "무례하거나 공격적인 언행에 기분이 매우 나쁨", sit: "선 넘는 농담을 들을 때", body: "얼굴이 붉어지고 시선을 돌림", aff: "나의 불쾌감을 솔직하고 정중하게 표현하기" },
+  { name: "심술궂다", cat: "cat-neg", desc: "상대가 타인을 비꼬거나 괴롭히는 모습에 거부감이 듦", sit: "비아냥거리는 말투를 들을 때", body: "눈매가 날카로워짐", aff: "상대가 사랑받고 싶은 욕구를 거칠게 표현함을 헤아리기" },
+  { name: "뻔뻔하다", cat: "cat-neg", desc: "잘못을 저지르고도 수치심을 느끼지 않는 태도에 화가 남", sit: "변명으로 일관할 때", body: "어이없음의 극치로 헛웃음", aff: "상대의 자기 방어 심리를 객관적으로 바라보기" },
+{ 
+  name: "염치없다", 
+  cat: "cat-neg", 
+  desc: "체면이나 수치를 모르고 뻔뻔하게 행동하는 태도에 불쾌함", 
+  sit: "분수에 넘치는 요구를 당연하게 할 때", 
+  body: "가슴이 답답하고 미간이 찌푸려짐", 
+  aff: "나의 기준과 상대의 기대치를 분리하여 평정심 유지" 
+},
+  { name: "잔인하다", cat: "cat-neg", desc: "공감이 결여된 태도에 상처받거나 거리감을 느낌", sit: "폭력적이거나 가혹한 모습을 볼 때", body: "몸이 떨리고 공포를 느낌", aff: "즉시 안전한 곳으로 몸을 피하고 보호하기" },
+  { name: "음흉하다", cat: "cat-neg", desc: "속을 알 수 없는 행동에 의심과 경계심이 생김", sit: "본심을 숨기는 것 같을 때", body: "상대를 계속 관찰하며 경계함", aff: "신뢰를 쌓기 위한 충분한 시간 갖기" },
+  { name: "지루하다", cat: "cat-neg", desc: "상대의 대화나 행동이 너무 무미건조하여 흥미가 없음", sit: "반복적인 이야기가 계속될 때", body: "하품하거나 다른 곳을 쳐다봄", aff: "상황을 전환할 새로운 자극을 스스로 찾기" },
+  { name: "경박하다", cat: "cat-neg", desc: "진지함이 부족하고 가벼운 언행에 신뢰가 가지 않음", sit: "중요한 자리에서 실없는 소리를 할 때", body: "냉소적인 눈빛", aff: "진중함의 가치를 상대에게 강요하지 않기" },
+  { name: "뻔하다", cat: "cat-pre", desc: "경험을 바탕으로 결과를 미리 단정 짓고 흥미를 잃음", sit: "비슷한 패턴이 반복될 때", body: "지루함에 몸을 뒤로 기댐", aff: "어제와 다른 오늘을 찾으려는 노력하기" },
+  { name: "틀렸다", cat: "cat-pre", desc: "나의 기준이 정답이라는 확신에 상대의 의견을 배척함", sit: "의견 차이로 대립할 때", body: "단호하게 고개를 흔듦", aff: "상대의 관점도 진실일 수 있음을 인정하기" },
+  { name: "독불장군이다", cat: "cat-pre", desc: "상대가 타협하지 않는 태도에 답답함을 느낌", sit: "협업이 안 될 때", body: "심한 피로감과 함께 힘 빠짐", aff: "협력을 통해 얻을 이익을 구체적으로 제시하기" },
+  { name: "속좁다", cat: "cat-pre", desc: "상대(나)의 배려 없는 행동을 보며 그릇이 작다고 비난함", sit: "자기중심적 행동을 볼 때", body: "비난 어린 시선으로 상대를 응시", aff: "내가 너그러운 포용력을 연습할 기회로 삼기" },
+  { name: "오만방자하다", cat: "cat-pre", desc: "상대의 건방진 태도에 나의 자존심이 상함", sit: "무시당했다는 느낌이 들 때", body: "분노로 주먹을 쥐거나 호흡이 거칠어짐", aff: "나의 존중받고 싶은 욕구를 정당하게 표현하기" },
+  { name: "멍청하다", cat: "cat-pre", desc: "상대의 지능 수준이 낮다고 함부로 단정함", sit: "실수를 거듭할 때", body: "답답함에 머리를 짚음", aff: "배움의 속도는 사람마다 다름을 인정하기" },
+  { name: "피곤하다", cat: "cat-pre", desc: "상대와 함께 있는 것만으로 에너지가 고갈됨을 느낌", sit: "갈등이 계속될 때", body: "온몸의 힘이 빠지며 탈진함", aff: "나를 위한 물리적/시간적 공간 확보하기" },
+  { name: "위험하다", cat: "cat-pre", desc: "상대가 나를 해칠 것 같다는 근거 없는 불안감을 느낌", sit: "낯선 사람이나 적대적인 상황일 때", body: "몸이 경직되고 긴장됨", aff: "안전망을 확인하고 냉정하게 현실 판단하기" },
+  { name: "거만하다", cat: "cat-pre", desc: "상대의 잘난 척하는 모습이 무시당하는 기분을 유발함", sit: "상대의 우월감 표출을 볼 때", body: "거부감을 느끼며 고개를 돌림", aff: "타인의 시선에 흔들리지 않는 나의 가치 확인하기" },
+  { name: "속물이다", cat: "cat-pre", desc: "돈과 물질을 밝히는 태도를 저급하다고 판단함", sit: "가치관의 차이가 극명할 때", body: "실망 섞인 표정으로 거리를 둠", aff: "다양한 삶의 방식과 생존 전략을 수용하기" },
+  { name: "불안하다", cat: "cat-pre", desc: "상대의 태도가 변덕스럽거나 예측이 안 되어 긴장됨", sit: "관계가 흔들리거나 신뢰가 깨질지도 모른다는 위기감이 들 때", body: "가슴이 조여오는 통증과 함께 긴장으로 몸이 경직됨", aff: "나에게 필요한 것은 안전감임을 확인하고, 이를 해소하기 위해 솔직한 대화를 시도하기" },
+  { name: "억울하다", cat: "cat-pre", desc: "나의 진심과 다르게 부당한 오해나 평가를 받음", sit: "변명할 기회조차 주어지지 않은 채 일방적으로 비난받을 때", body: "가슴이 답답하고 눈물이 맺히며 목이 메어 옴", aff: "감정에 휘둘리기보다 차분히 나의 진심을 정리하여 상대에게 명확하게 전하기" },
+  { name: "열등하다", cat: "cat-pre", desc: "상대의 뛰어난 점과 나를 비교하며 작아짐", sit: "상대가 성취를 인정받거나 주변의 찬사를 받을 때", body: "자신감이 떨어지며 몸이 위축되고 구석으로 숨고 싶어짐", aff: "타인과의 비교를 멈추고, 내 안의 고유한 재능과 가치를 발견하여 스스로를 사랑하기" },
+  { name: "질투 난다", cat: "cat-pre", desc: "남이 가진 것이 탐나고 내 상황과 비교하게 됨", sit: "친구나 동료가 내가 원하던 것을 얻었을 때", body: "가슴 안쪽이 쓰라리고 무거운 기분이 듬", aff: "질투의 감정을 숨기지 말고, 그것을 내 삶에 무엇이 필요한지 알려주는 신호로 활용하기" },
+  { name: "부끄럽다", cat: "cat-pre", desc: "나의 위선이나 판단하는 모습이 들켜서 당혹스러움", sit: "남을 비판하던 내가 똑같은 실수를 했을 때", body: "얼굴이 화끈거리고 시선을 어디에 둬야 할지 몰라 당황스러움", aff: "실수할 수 있는 인간임을 인정하고, 나 자신을 너그럽게 수용하여 성장하기" },
+  { name: "지친다", cat: "cat-pre", desc: "관계를 유지하려는 노력이 지나쳐 에너지가 고갈됨", sit: "상대를 배려하고 맞추느라 정작 나를 돌볼 에너지가 남아있지 않을 때", body: "어깨가 처지고 만사가 귀찮아지며 무력감이 몰려옴", aff: "관계를 잠시 뒤로하고, 오직 나만을 위한 휴식과 에너지를 채우는 시간 갖기" },
+  { name: "분노한다", cat: "cat-pre", desc: "나의 소중한 가치가 무참히 짓밟히는 것을 느낌", sit: "불의를 목격하거나 나의 인격이 모독당하는 상황을 겪을 때", body: "심박수가 급격히 상승하고 손끝이 떨릴 정도로 격양됨", aff: "파괴적인 분노를 건강한 분노로 승화시켜, 나를 변화시키고 세상을 바꾸는 동력으로 활용하기" },
+  { name: "당황스럽다", cat: "cat-pre", desc: "예상치 못한 상황에 직면하여 어떻게 대응할지 모름", sit: "관계에서 갑작스럽게 사건이 터졌거나 상대의 돌발 행동이 있을 때", body: "동공이 흔들리고 머릿속이 하얘지며 몸이 굳어버림", aff: "상황을 즉시 해결하려 하지 말고, 우선 깊게 호흡하며 마음의 중심 잡기" },
+  { name: "혼란스럽다", cat: "cat-pre", desc: "상황이 복잡해져 무엇이 옳은지 판단 기준이 서지 않음", sit: "상대의 모순된 태도와 주변의 의견이 뒤섞여 갈피를 잡지 못할 때", body: "머리가 지끈거리고 온종일 생각의 늪에서 빠져나오지 못함", aff: "외부의 정보들을 차단하고, 나의 내면 깊은 곳에 있는 본질적인 가치를 다시 떠올리기" }
 ];
 
 const emotionsData = [
-    { name: "기쁘다", cat: "cat-joy", desc: "마음먹은 대로 일이 잘되거나, 원하던 상황이 이루어져서 마음이 즐겁고 흐뭇한 상태", sit: "목표 달성이나 축하를 들었을 때", body: "가슴이 벅차오르고 입가에 미소가 번지며 몸이 가벼워짐", aff: "이 기쁨을 충분히 누리며 나를 축하합니다." },
-    { name: "감사하다", cat: "cat-joy", desc: "선의를 발견하고 마음이 따뜻하게 열리는 상태", sit: "배려를 경험하거나 평화를 깨달았을 때", body: "가슴 부위가 훈훈해지고 어깨의 긴장이 스르르 풀림", aff: "세상이 건네는 모든 친절에 감사합니다." },
-    { name: "행복하다", cat: "cat-joy", desc: "만족을 느끼며 내면이 훈훈하게 가득 찬 상태", sit: "사랑하는 이들과 함께하는 순간", body: "온몸에 따뜻한 에너지가 퍼지고 호흡이 깊고 편안해짐", aff: "나는 지금 이 순간 행복할 자격이 있습니다." },
-    { name: "감동하다", cat: "cat-joy", desc: "타인의 진심을 마주하여 가슴이 뭉클해지는 떨림", sit: "명장면이나 희생을 보았을 때", body: "콧날이 시큰해지거나 가슴 중앙이 조여오는 듯한 뭉클함", aff: "내 마음을 적시는 따뜻한 떨림을 소중히 여깁니다." },
-    { name: "만족하다", cat: "cat-joy", desc: "마음이 넉넉해져 있는 그대로를 긍정하는 여유", sit: "몰두한 일을 마친 뒤 쉴 때", body: "몸의 모든 근육이 이완되고 미각이나 후각이 예민해짐", aff: "나는 이미 충분하며 지금 이대로 만족합니다." },
-    { name: "든든하다", cat: "cat-joy", desc: "믿을 수 있는 지지가 있음을 확인한 강인함", sit: "나를 믿어주는 사람의 격려를 받았을 때", body: "척추가 곧게 펴지는 느낌과 함께 아랫배에 힘이 들어감", aff: "소중한 존재들이 나를 지켜줍니다." },
-    { name: "자랑스럽다", cat: "cat-joy", desc: "이뤄낸 성취를 대견하게 여기는 마음", sit: "어려운 도전을 끝내거나 성장을 볼 때", body: "어깨가 펴지고 고개가 들리며 심장이 힘차게 뜀", aff: "나는 나의 노력을 진심으로 자랑스러워합니다." },
-    { name: "편안하다", cat: "cat-joy", desc: "긴장이 풀리고 안정을 되찾은 상태", sit: "따뜻한 차를 마시며 쉴 때", body: "눈꺼풀이 가벼워지고 손끝과 발끝까지 이완됨", aff: "나는 모든 긴장을 내려놓고 평온에 머눕니다." },
-    { name: "뿌듯하다", cat: "cat-joy", desc: "노력이 결실을 맺어 내면이 꽉 찬 성취감", sit: "하루의 할 일을 성실히 마친 순간", body: "가슴 상부가 넓게 확장되는 느낌과 가벼운 고양감", aff: "성실하게 채워온 나의 시간이 자랑스럽습니다." },
-    { name: "기대하다", cat: "cat-joy", desc: "긍정적 변화를 상상하며 샘솟는 활기", sit: "새로운 도전이나 기다리던 만남 전", body: "몸이 앞으로 기울어지고 눈빛이 반짝이며 에너지가 상승함", aff: "찾아올 멋진 미래를 설레며 기다립니다." },
-    { name: "반갑다", cat: "cat-joy", desc: "존재를 다시 마주하며 연결이 회복되는 기쁨", sit: "친한 친구를 오랜만에 만났을 때", body: "목소리 톤이 높아지고 손동작이 커지며 심박수가 증가함", aff: "만남이 주는 활기찬 에너지를 맞이합니다." },
-    { name: "신나다", cat: "cat-joy", desc: "기대로 인해 몸에 활발한 에너지가 도는 상태", sit: "공연을 보러 가기 직전이나 여행길", body: "손발을 가만히 두기 어렵고 몸에 가벼운 전율이 느껴짐", aff: "내 안의 즐거운 에너지가 힘차게 솟구칩니다." },
-    { name: "재미있다", cat: "cat-joy", desc: "흥미로운 자극에 몰입하여 유쾌한 즐거움", sit: "좋아하는 취미 생활에 몰입할 때", body: "입꼬리가 올라가고 눈 주변의 근육이 부드러워짐", aff: "삶은 즐거운 놀이터이며 매 순간을 즐깁니다." },
-    { name: "당당하다", cat: "cat-joy", desc: "가치와 신념에 확신을 가져 곧고 떳떳한 상태", sit: "진실을 말하거나 원칙에 따라 행동할 때", body: "발바닥이 지면에 단단히 닿은 느낌과 목소리에 힘이 실림", aff: "나는 나의 존재와 선택에 확신이 있습니다." },
-    { name: "평온하다", cat: "cat-joy", desc: "내면의 질서가 잡혀 깊은 안식을 누리는 상태", sit: "갈등 해결 후 고요한 시간을 가질 때", body: "얼굴 근육이 완전히 풀리고 호흡의 주기가 일정해짐", aff: "내 마음은 잔잔한 호수처럼 고요합니다." },
-    { name: "사랑스럽다", cat: "cat-love", desc: "대상이 소중하여 아껴주고 싶은 애정", sit: "잠든 아기나 반려동물을 볼 때", body: "심장 부위가 간질거리고 온몸의 감각이 부드러워짐", aff: "내 마음의 사랑이 주변을 따뜻하게 비춥니다." },
-    { name: "설레다", cat: "cat-love", desc: "새로운 가능성에 대한 기대감으로 생기가 도는 기분", sit: "좋아하는 사람을 만나기 전", body: "가슴이 두근거리고 아랫배가 화해지는 묘한 떨림", aff: "기분 좋은 떨림이 삶을 새롭게 깨웁니다." },
-    { name: "미안하다", cat: "cat-love", desc: "행동의 실수를 인지하고 회복을 원하는 마음", sit: "약속에 늦었거나 상처를 주었을 때", body: "가슴이 답답하고 고개가 숙여지며 눈치를 보게 됨", aff: "나의 진심 어린 사과가 관계를 회복시킵니다." },
-    { name: "따뜻하다", cat: "cat-love", desc: "친절을 경험하며 경계가 녹아내리는 상태", sit: "위로를 받거나 깊은 교감을 나눌 때", body: "몸의 온도가 올라가는 듯한 느낌과 함께 표정이 온화해짐", aff: "내 마음은 사랑의 온기로 가득합니다." },
-    { name: "안도하다", cat: "cat-love", desc: "걱정이 해결되거나 위험이 사라진 상태", sit: "어려운 고비를 무사히 넘겼을 때", body: "참았던 숨을 깊게 내뱉으며(한숨) 온몸의 힘이 쭉 빠짐", aff: "폭풍이 지나갔습니다. 이제는 안전합니다." },
-    { name: "불안하다", cat: "cat-anx", desc: "보호를 위해 감각이 예민하게 깨어있는 긴장", sit: "결과를 기다리거나 불확실한 미래 앞에서", body: "심장이 빠르게 뛰고 손발이 차가워지며 호흡이 얕아짐", aff: "불안은 나를 지키려는 신호일 뿐입니다." },
-    { name: "걱정하다", cat: "cat-anx", desc: "부정적 가능성에 에너지가 쏠려 있는 상태", sit: "연락이 늦거나 해결 안 된 일이 있을 때", body: "미간에 주름이 잡히고 머리 뒷부분이 팽팽하게 당김", aff: "걱정 대신 지금 할 수 있는 행동에 집중합니다." },
-    { name: "혼란스럽다", cat: "cat-anx", desc: "상충하는 욕구가 엉켜 질서가 흔들리는 상태", sit: "중요한 갈림길에서 판단이 서지 않을 때", body: "머릿속이 멍해지거나 눈동자가 자주 흔들리며 어지러움", aff: "생각이 걷히면 곧 명확한 답이 보일 것입니다." },
-    { name: "긴장하다", cat: "cat-anx", desc: "중요한 일을 앞두고 마음이 조마조마함", sit: "면접을 앞두고 너무 긴장해서 손에 땀이 났다.", body: "손바닥에 땀이 나고 어깨가 귀 쪽으로 바짝 올라감", aff: "이 긴장은 준비되었다는 증거입니다." },
-    { name: "놀라다", cat: "cat-anx", desc: "갑작스러운 변화에 반응하는 몸의 반동", sit: "예상치 못한 소식이나 큰 소리가 날 때", body: "눈이 커지고 숨이 턱 막히며 몸이 순간적으로 굳음", aff: "차분하게 안정을 되찾고 상황을 봅니다." },
-    { name: "당황하다", cat: "cat-anx", desc: "예상치 못한 상황에 대처가 일시 마비된 상태", sit: "실수를 하거나 갑작스러운 질문을 받을 때", body: "얼굴이 화끈거림을 느끼고 머릿속이 하얘지며 손동작이 꼬임", aff: "당황해도 괜찮습니다. 지혜를 찾을 것입니다." },
-    { name: "두렵다", cat: "cat-anx", desc: "위협을 느껴 저항하고 싶은 원초적 감정", sit: "압박을 주는 상대나 공포를 마주할 때", body: "몸이 떨리고 입술이 마르며 뒤로 물러나고 싶어짐", aff: "내 안의 용기를 믿으며 나를 지킵니다." },
-    { name: "무섭다", cat: "cat-anx", desc: "공포 대상 앞에서 자기 보호 기제가 작동함", sit: "천둥번개나 위험 요소를 발견할 때", body: "소름이 돋고식은땀이 흐르며 근육이 경직됨", aff: "나는 안전한 곳에 있습니다. 곧 지나갑니다." },
-    { name: "초조하다", cat: "cat-anx", desc: "결과에 쫓겨 빨리 마무리되기를 갈망함", sit: "순서를 기다리거나 기한이 임박할 때", body: "다리를 떨거나 손톱을 만지작거리며 자꾸 시계를 봄", aff: "모든 것은 제때 이루어집니다. 나를 믿습니다." },
-    { name: "부끄럽다", cat: "cat-anx", desc: "실수가 드러났다고 느껴져 숨고 싶은 마음", sit: "사람들 앞에서 실수를 했을 때", body: "귀가 빨개지고 목소리가 작아지며 시선을 피하게 됨", aff: "실수는 인간미의 증거입니다. 나를 수용합니다." },
-    { name: "부담스럽다", cat: "cat-anx", desc: "감당하기 어려운 기대에 의한 중압감", sit: "무리한 부탁을 받거나 책임이 무거울 때", body: "어깨와 목덜미가 묵직하고 가슴이 답답하게 압박됨", aff: "나는 내 한계를 존중하며 거절할 수 있습니다." },
-    { name: "막막하다", cat: "cat-anx", desc: "길이 보이지 않아 무력한 상태", sit: "진로 등 선택지가 보이지 않을 때", body: "눈앞이 흐릿한 기분과 함께 깊은 숨이 자주 나옴", aff: "한 걸음씩 나아갑니다. 길은 만들어집니다." },
-    { name: "위축되다", cat: "cat-anx", desc: "자신감이 줄어들고 마음이 오그라드는 상태", sit: "비난을 받거나 비교를 당할 때", body: "가슴을 웅크리게 되고 목소리가 기어들어 가듯 작아짐", aff: "나는 그 자체로 고유한 빛을 가진 존재입니다." },
-    { name: "답답하다", cat: "cat-ang", desc: "소통과 자유가 해소되지 못하고 갇힌 기분", sit: "말이 통하지 않거나 정체되어 있을 때", body: "가슴 한복판이 꽉 막힌 느낌과 목이 조이는 듯함", aff: "답답함은 변화를 원한다는 신호입니다." },
-    { name: "억울하다", cat: "cat-ang", desc: "공정함이 훼손되었다고 느껴지는 분노", sit: "오해받거나 기여가 무시당했을 때", body: "눈시울이 뜨거워지고 이가 갈리며 주먹에 힘이 들어감", aff: "진실은 나를 지켜줄 것입니다." },
-    { name: "짜증나다", cat: "cat-ang", desc: "불만족이 반복되어 날카로운 상태", sit: "피로가 쌓인 상태에서 소음을 겪을 때", body: "얼굴 근육이 팽팽해지고 목소리가 날카워지며 미간을 찌푸림", aff: "나는 감정의 주인이며 평온을 선택합니다." },
-    { name: "불쾌하다", cat: "cat-ang", desc: "어떤 사물이나 상황이 마음에 들지 않아 기분이 좋지 않고 꺼림칙한 상태", sit: "무례한 행동을 목격하거나, 위생적이지 못한 환경에 처했을 때", body: "미간이 찌푸려지고 몸이 움츠러들며, 기운이 소모되는 느낌이 듦", aff: "불편한 원인을 살피고, 나를 보호하기 위해 적절한 거리를 둡니다." },
-    { name: "분하다", cat: "cat-ang", desc: "부당한 일로 울분이 가득 찬 상태", sit: "노력을 가로채이거나 상처 입었을 때", body: "얼굴이 붉어지고 몸에 열이 오르며 거친 숨을 내쉼", aff: "지혜로운 대처를 통해 나를 지겠습니다." },
-    { name: "밉다", cat: "cat-ang", desc: "원망스러워 거리감을 두고 싶은 감정", sit: "진심을 무시한 상대가 떠오를 때", body: "입술을 굳게 다물게 되고 상대 쪽으로 고개를 돌리기 싫어짐", aff: "미움 대신 나를 아끼는 마음을 채웁니다." },
-    { name: "원망스럽다", cat: "cat-ang", desc: "고통의 책임을 상대에게 돌리는 아픈 마음", sit: "결정적 순간에 곁에 없었던 이에 대한 서운함", body: "가슴 깊은 곳이 쓰리고 명치 부근이 딱딱해짐", aff: "기대를 내려놓고 스스로를 돕습니다." },
-    { name: "얄밉다", cat: "cat-ang", desc: "타인의 행동이 공정함에 어긋나 보이는 거부감", sit: "책임을 회피하며 이득만 챙기는 이를 볼 때", body: "코웃음이 나거나 눈매가 가늘어지며 혀를 차게 됨", aff: "타인에게 휘둘리지 않고 품위를 유지합니다." },
-    { name: "질투하다", cat: "cat-ang", desc: "남의 것을 보고 나의 결핍이 자극되는 시기", sit: "타인의 성과를 축하하기 힘들 때", body: "속이 뒤틀리는 느낌과 함께 가슴이 서늘해짐", aff: "타인의 성취는 나의 가능성을 보여주는 거울입니다." },
-    { name: "불편하다", cat: "cat-ang", desc: "평온이 깨져 대상을 피하고 싶은 방어 상태", sit: "가치관이 맞지 않는 사람과 있을 때", body: "몸이 뻣뻣해지고 자꾸 자세를 바꾸게 되며 시선을 피함", aff: "나의 경계를 지키며 지혜롭게 지나갑니다." },
-    { name: "어색하다", cat: "cat-ang", desc: "분위기 속에서 행동이 부자연스러운 상태", sit: "서먹한 이와 단둘이 남겨졌을 때", body: "손을 어디에 둘지 모르겠고 미소가 부자연스러움", aff: "어색함조차 과정입니다. 가벼운 미소를 지어봅니다." },
-    { name: "황당하다", cat: "cat-ang", desc: "비논리적 일로 어처구니가 없는 상태", sit: "터무니없는 거짓말을 들었을 때", body: "입이 벌어지고 헛웃음이 나오며 힘이 탁 풀림", aff: "황당한 일에 소중한 감정을 쏟지 않습니다." },
-    { name: "어이없다", cat: "cat-ang", desc: "일이 너무 뜻밖이거나 기가 막혀서 말문이 막히고 기가 차는 상태", sit: "상식 밖의 행동이나 도를 넘은 무례함을 목격했을 때", body: "순간적으로 머릿속이 하얘지고, 헛웃음이 나며 가슴이 답답해짐", aff: "어이없는 상황에 휘둘리기보다, 내 중심을 잡고 상황과 한 걸음 거리를 둡니다." },
-    { name: "속상하다", cat: "cat-ang", desc: "슬픔과 화가 미묘하게 섞인 상태", sit: "가까운 이가 나의 배려를 무시할 때", body: "코끝이 찡해지고 가슴 중앙이 아릿하게 저려옴", aff: "나는 존중받을 자격이 있습니다." },
-    { name: "서운하다", cat: "cat-sad", desc: "연결이 부족해 씁쓸함이 남는 상태", sit: "특별한 날을 잊었거나 무관심할 때", body: "입꼬리가 처지고 가슴이 텅 빈 듯한 허전함이 느껴짐", aff: "서운함은 더 사랑받고 싶은 마음입니다." },
-    { name: "외롭다", cat: "cat-sad", desc: "이해받지 못해 섬처럼 느껴지는 쓸쓸함", sit: "군중 속이나 혼자 남겨진 밤", body: "팔다리가 차갑게 느껴지고 몸이 작아지는 듯한 오한", aff: "나는 나 자신과 먼저 친해지겠습니다." },
-    { name: "슬프다", cat: "cat-sad", desc: "상실의 아픔을 수용하고 정화하는 애도", sit: "이별이나 아픈 진실을 마주할 때", body: "눈시울이 뜨거워지고 온몸에 힘이 빠지며 가슴이 무거움", aff: "눈물은 상처 입은 마음을 씻어줍니다." },
-    { name: "소외되다", cat: "cat-sad", desc: "연결감을 잃고 단절된 듯한 마음", sit: "모임에 초대받지 못하거나 대화에 낄 수 없을 때", body: "목이 메이고 가슴 부근이 싸늘하게 식는 느낌", aff: "나는 그 자체로 소중하며 진정한 곳을 찾을 것입니다." },
-    { name: "우울하다", cat: "cat-sad", desc: "에너지가 낮아져 마음이 무거운 상태", sit: "무력감이 지속되거나 단절된 느낌일 때", body: "눈꺼풀이 무겁고 온몸이 젖은 솜처럼 바닥으로 가라앉음", aff: "이 또한 날씨일 뿐입니다. 해는 뜹니다." },
-    { name: "무기력하다", cat: "cat-sad", desc: "아무것도 할 힘이 없어 에너지가 바닥난 상태", sit: "반복된 실패나 번아웃이 왔을 때", body: "손가락 하나 까딱하기 싫고목소리에 생기가 전혀 없음", aff: "지금은 뿌리를 내리는 쉼의 시간입니다." },
-    { name: "무력하다", cat: "cat-sad", desc: "상황을 바꿀 수 없다는 느낌에 압도된 마음", sit: "반복되는 갈등 속에 해결책이 없을 때", body: "어깨가 축 처지고 심장 박동이 아주 느리고 약해짐", aff: "아무것도 하지 않아도 괜찮습니다." },
-    { name: "후회하다", cat: "cat-sad", desc: "과거의 선택을 아쉬워하는 성찰", sit: "기회를 놓쳤거나 상처를 주었을 때", body: "가슴을 치고 싶거나 머리를 감싸 쥐게 되며 속이 쓰림", aff: "과거의 실수에서 지혜를 배워 성장합니다." },
-    { name: "좌절하다", cat: "cat-sad", desc: "의지가 꺾이고 희망이 사라진 아픈 시간", sit: "노력이 실패로 돌아가 엄두가 나지 않을 때", body: "무릎에 힘이 풀리고 가슴이 턱 막혀 숨쉬기가 힘듦", aff: "좌절은 멈춤이지 끝이 아닙니다." },
-    { name: "귀찮다", cat: "cat-sad", desc: "에너지를 최소화하고 싶은 정지 신호", sit: "해야 할 일은 많지만 몸이 무거울 때", body: "눈을 감고 싶고 몸의 반응 속도가 현저히 느려짐", aff: "쉼이 필요하다는 신호임을 인정합니다." },
-    { name: "지루하다", cat: "cat-sad", desc: "의미를 발견하지 못해 시간이 정체된 상태", sit: "단조로운 일상이 반복될 때", body: "하품이 나오고 턱을 괴거나 몸을 비틀게 됨", aff: "지루함 속에 영감의 씨앗이 있습니다." },
-    { name: "피곤하다", cat: "cat-sad", desc: "쉼을 강력하게 요청하는 고갈 신호", sit: "쉼 없이 달려와 모든 의욕이 사라질 때", body: "머리가 무겁고 눈이 따가우며 뒷목이 뻣팎함", aff: "고생한 나에게 깊은 휴식을 선물합니다." },
-    { name: "부럽다", cat: "cat-sad", desc: "타인의 처지로 결핍이 자극되는 시기", sit: "친구의 성공 소식을 보았을 때", body: "시선이 자꾸 아래로 향하고 가슴 한구석이 쿡쿡 쑤심", aff: "나에게는 나만의 고유한 행복이 이미 있습니다." },
-    { name: "괴롭다", cat: "cat-sad", desc: "고통이 극심하여 벗어나고 싶은 간절함", sit: "상처가 떠오르거나 현실이 힘들 때", body: "온몸의 근육이 뒤틀리는 듯하고 가슴이 찢어지는 통증", aff: "고통을 따뜻하게 안아주며 치유합니다." },
-    { name: "그리워하다", cat: "cat-sad", desc: "부재하는 대상과 연결되고 싶은 상태", sit: "이별한 이의 유품이나 흔적을 볼 때", body: "가슴 부근이 아련하게 저리고 목소리가 떨림", aff: "그리움은 내가 사랑했다는 증거입니다." },
-    { name: "실망하다", cat: "cat-sad", desc: "기대가 무너져 허탈하고 신뢰가 흔들림", sit: "믿었던 이의 무심한 모습을 보았을 때", body: "몸에서 기운이 빠져나가며 입안이 마르는 느낌", aff: "실망은 환상이 걷힌 자리에 진실을 세우는 일입니다." },
-    { name: "서럽다", cat: "cat-sad", desc: "억울함과 슬픔이 북받쳐 오르는 아픈 마음", sit: "혼자 아프거나 오해받을 때", body: "어깨를 떨며 흐느끼게 되고 가슴이 요동침", aff: "내 마음의 울음을 충분히 들어주겠습니다." },
-    { name: "안타깝다", cat: "cat-sad", desc: "상황을 개선해주고 싶으나 뜻대로 안 됨", sit: "도움을 주고 싶지만 지켜만 봐야 할 때", body: "손바닥을 비비거나 발을 동동 구르며 가슴이 타는 듯함", aff: "나의 기도가 작은 위로가 되길 바랍니다." },
-    { name: "아쉽다", cat: "cat-sad", desc: "바라던 바가 채워지지 않아 미련이 남음", sit: "조금만 더 노력했거나 기회가 있었다면 결과가 달랐을 때", body: "입술을 깨물거나 한숨을 깊게 쉬며 가슴 한구석이 허전함", aff: "다음에는 당신이 원하는 결과를 꼭 얻기를 응원합니다." },
-    { name: "허탈하다", cat: "cat-sad", desc: "결과가 무너져 에너지가 빠져나간 허전함", sit: "노력이 수포로 돌아갔을 때", body: "팔다리에 힘이 하나도 없고 가슴 속이 텅 빈 구멍 같음", aff: "비워진 마음을 인정하며 새로운 에너지를 기다립니다." }
+    { name: "기쁘다", cat: "cat-joy", desc: "원하던 일이 뜻대로 이루어져 마음이 매우 즐겁고 흐뭇한 상태", sit: "목표 달성이나 축하를 들었을 때", body: "가슴이 벅차오르고 입가에 미소가 번지며 몸이 가벼워짐", aff: "이 기쁨을 충분히 누리며 나를 축하합니다." },
+    { name: "감사하다", cat: "cat-joy", desc: "상대의 선의나 주어진 상황에 고마움을 느껴 마음이 따뜻하게 열리는 상태", sit: "배려를 경험하거나 평화를 깨달았을 때", body: "가슴 부위가 훈훈해지고 어깨의 긴장이 스르르 풀림", aff: "세상이 건네는 모든 친절에 감사합니다." },
+    { name: "행복하다", cat: "cat-joy", desc: "생활 속에서 충분한 만족과 기쁨을 느끼며 내면이 훈훈하게 가득 찬 상태", sit: "사랑하는 이들과 함께하는 순간", body: "온몸에 따뜻한 에너지가 퍼지고 호흡이 깊고 편안해짐", aff: "나는 지금 이 순간 행복할 자격이 있습니다." },
+    { name: "감동하다", cat: "cat-joy", desc: "타인의 진심이나 아름다운 모습에 마음이 크게 움직여 가슴이 뭉클해지는 떨림", sit: "명장면이나 희생을 보았을 때", body: "콧날이 시큰해지거나 가슴 중앙이 조여오는 듯한 뭉클함", aff: "내 마음을적시는 따뜻한 떨림을 소중히 여깁니다." },
+	{ name: "감격스럽다", cat: "cat-joy", desc: "기대 이상의 큰 기쁨이나 벅찬 상황을 마주하여 마음이 강렬하게 벅차오르는 느낌", sit: "오랜 노력 끝에 큰 성취를 이루거나 간절히 바라던 일이 이루어졌을 때", body: "심장 박동이 빨라지고 눈시울이 붉어지며 온몸에 찌릿한 전율이 흐르는 느낌", aff: "내게 찾아온 이 벅찬 순간을 온전히 누리며 깊이 감사합니다." },
+    { name: "만족하다", cat: "cat-joy", desc: "모자람 없이 마음에 흡족하여 모나지 않고 있는 그대로를 긍정하는 여유", sit: "몰두한 일을 마친 뒤 쉴 때", body: "몸의 모든 근욕이 이완되고 미각이나 후각이 예민해짐", aff: "나는 이미 충분하며 지금 이대로 만족합니다." },
+    { name: "든든하다", cat: "cat-joy", desc: "뒤를 받쳐주는 신뢰나 지지가 있음을 확인하여 마음이 굳건하고 강인해진 상태", sit: "나를 믿어주는 사람의 격려를 받았을 때", body: "척추가 곧게 펴지는 느낌과 함께 아랫배에 힘이 들어감", aff: "소중한 존재들이 나를 지켜줍니다." },
+    { name: "자랑스럽다", cat: "cat-joy", desc: "스스로 이뤄낸 성취나 대상의 가치를 대견하고 떳떳하게 여기는 마음", sit: "어려운 도전을 끝내거나 성장을 볼 때", body: "어깨가 펴지고 고개가 들리며 심장이 힘차게 뜀", aff: "나는 나의 노력을 진심으로 자랑스러워합니다." },
+    { name: "편안하다", cat: "cat-joy", desc: "어떠한 걱정이나 얽매임이 없이 몸과 마음의 긴장이 풀리고 안정을 되찾은 상태", sit: "따뜻한 차를 마시며 쉴 때", body: "눈꺼풀이 가벼워지고 손끝과 발끝까지 이완됨", aff: "나는 모든 긴장을 내려놓고 평온에 머눕니다." },
+    { name: "뿌듯하다", cat: "cat-joy", desc: "성실한 노력의 결과로 가슴이 벅차오르고 내면이 가득 채워지는 듯한 성취감", sit: "하루의 할 일을 성실히 마친 순간", body: "가슴 상부가 넓게 확장되는 느낌과 가벼운 고양감", aff: "성실하게 채워온 나의 시간이 자랑스럽습니다." },
+    { name: "기대하다", cat: "cat-joy", desc: "앞으로 일어날 긍정적인 변화나 만남을 상상하며 마음속에 샘솟는 활기", sit: "새로운 도전이나 기다리던 만남 전", body: "몸이 앞으로 기울어지고 눈빛이 반짝이며 에너지가 상승함", aff: "찾아올 멋진 미래를 설레며 기다립니다." },
+    { name: "반갑다", cat: "cat-joy", desc: "그리워하던 존재를 다시 마주하게 되어 단절되었던 연결이 회복되는 기쁨", sit: "친한 친구를 오랜만에 만났을 때", body: "목소리 톤이 높아지고 손동작이 커지며 심박수가 증가함", aff: "만남이 주는 활기찬 에너지를 맞이합니다." },
+    { name: "신나다", cat: "cat-joy", desc: "흥분과 기대로 인해 몸 전체에 활발하고 유쾌한 에너지가 강하게 도는 상태", sit: "공연을 보러 가기 직전이나 여행길", body: "손발을 가만히 두기 어렵고 몸에 가벼운 전율이 느껴짐", aff: "내 안의 즐거운 에너지가 힘차게 솟구칩니다." },
+    { name: "재미있다", cat: "cat-joy", desc: "흥미로운 자극이나 활동에 깊이 몰입하여 느끼는 즐겁고 유쾌한 기분", sit: "좋아하는 취미 생활에 몰입할 때", body: "입꼬리가 올라가고 눈 주변의 근육이 부드러워짐", aff: "삶은 즐거운 놀이터이며 매 순간을 즐깁니다." },
+    { name: "당당하다", cat: "cat-joy", desc: "자신의 가치와 신념에 확신을 가져 남 앞에 굽힘 없이 떳떳하고 곧은 상태", sit: "진실을 말하거나 원칙에 따라 행동할 때", body: "발바닥이 지면에 단단히 닿은 느낌과 목소리에 힘이 실림", aff: "나는 나의 존재와 선택에 확신이 있습니다." },
+    { name: "평온하다", cat: "cat-joy", desc: "갈등이나 외부 자극이 걷히고 내면의 질서가 잡혀 깊은 안식을 누리는 상태", sit: "갈등 해결 후 고요한 시간을 가질 때", body: "얼굴 근육이 완전히 풀리고 호흡의 주기가 일정해짐", aff: "내 마음은 잔잔한 호수처럼 고요합니다." },
+    { name: "사랑스럽다", cat: "cat-love", desc: "대상의 존재가 너무나 소중하고 예뻐서 온 마음으로 아껴주고 싶은 깊은 애정", sit: "잠든 아기나 반려동물을 볼 때", body: "심장 부위가 간질거리고 온몸의 감각이 부드러워짐", aff: "내 마음의 사랑이 주변을 따뜻하게 비춥니다." },
+    { name: "설레다", cat: "cat-love", desc: "새로운 가능성이나 사랑하는 존재에 대한 기대로 가슴이 잔잔하게 뛰는 기분", sit: "좋아하는 사람을 만나기 전", body: "가슴이 두근거리고 아랫배가 화해지는 묘한 떨림", aff: "기분 좋은 떨림이 삶을 새롭게 깨웁니다." },
+    { name: "미안하다", cat: "cat-love", desc: "자신의 행동이 타인에게 불편이나 상처를 주었음을 인정하고 회복을 바라는 마음", sit: "약속에 늦었거나 상처를 주었을 때", body: "가슴이 답답하고 고개가 숙여지며 눈치를 보게 됨", aff: "나의 진심 어린 사과가 관계를 회복시킵니다." },
+    { name: "따뜻하다", cat: "cat-love", desc: "타인의 친절과 위로를 경험하며 마음속의 경계와 긴장이 부드럽게 녹아내리는 상태", sit: "위로를 받거나 깊은 교감을 나눌 때", body: "몸의 온도가 올라가는 듯한 느낌과 함께 표정이 온화해짐", aff: "내 마음은 사랑의 온기로 가득합니다." },
+    { "name": "애틋하다", "cat": "cat-love", "desc": "사랑하는 대상의 아픔이나 소중함이 마음 깊이 느껴져서, 도와주고 싶고 마음이 짠하게 저려오는 감정", "sit": "힘겨워하는 소중한 사람을 바라보거나, 과거의 따뜻한 추억이 떠올랐을 때", "body": "가슴 중앙이 뭉클하고 부드럽게 죄여오는 느낌과 함께 눈시울이 살짝 뜨거워짐", "aff": "내 마음의 깊은 사랑이 당신에게 따뜻한 위로로 닿기를 바랍니다." },
+    { name: "안도하다", cat: "cat-love", desc: "마음을 무겁게 짓누르던 걱정이 해결되거나 눈앞의 위험이 사라져 놓이는 상태", sit: "어려운 고비를 무사히 넘겼을 때", body: "참았던 숨을 깊게 내뱉으며(한숨) 온몸의 힘이 쭉 빠짐", aff: "폭풍이 지나갔습니다. 이제는 안전합니다." },
+    { name: "불안하다", cat: "cat-anx", desc: "다가올 불확실한 상황에 대비하여 신경과 감각이 예민하게 깨어있는 긴장 상태", sit: "결과를 기다리거나 불확실한 미래 앞에서", body: "심장이 빠르게 뛰고 손발이 차가워지며 호흡이 얕아짐", aff: "불안은 나를 지키려는 신호일 뿐입니다." },
+    { name: "걱정하다", cat: "cat-anx", desc: "아직 일어나지 않은 부정적인 가능성에 온 신경과 에너지가 쏠려 있는 상태", sit: "연락이 늦거나 해결 안 된 일이 있을 때", body: "미간에 주름이 잡히고 머리 뒷부분이 팽팽하게 당김", aff: "걱정 대신 지금 할 수 있는 행동에 집중합니다." },
+    { name: "혼란스럽다", cat: "cat-anx", desc: "상충하는 생각과 욕구가 마음속에서 뒤엉켜 판단의 기준과 질서가 흔들리는 상태", sit: "중요한 갈림길에서 판단이 서지 않을 때", body: "머릿속이 멍해지거나 눈동자가 자주 흔들리며 어지러움", aff: "생각이 걷히면 곧 명확한 답이 보일 것입니다." },
+    { name: "긴장하다", cat: "cat-anx", desc: "중요한 일이나 낯선 환경을 앞두고 몸과 마음이 굳어 조마조마해진 상태", sit: "면접을 앞두고 너무 긴장해서 손에 땀이 났다.", body: "손바닥에 땀이 나고 어깨가 귀 쪽으로 바짝 올라감", aff: "이 긴장은 준비되었다는 증거입니다." },
+    { "name": "조마조마하다", "cat": "cat-anx", "desc": "결과가 나오기까지 마음을 놓지 못하고, 혹시나 잘못되지 않을까 불안해하며 전전긍긍하는 상태", "sit": "나의 노력과 별개로 결과가 결정되기를 기다리고 있거나, 불안한 상황이 지속될 때", "body": "심장이 불규칙하게 뛰고 소화가 잘 안 되며, 자꾸 몸을 뒤척이거나 주변을 살피게 됨", "aff": "불확실함은 삶의 과정입니다. 나의 마음을 편안하게 내려놓고 결과를 신뢰합니다." },
+    { name: "놀라다", cat: "cat-anx", desc: "뜻밖의 갑작스러운 변화나 충격을 마주하여 순간적으로 신체 감각이 얼어붙는 상태", sit: "예상치 못한 소식이나 큰 소리가 날 때", body: "눈이 커지고 숨이 턱 막히며 몸이 순간적으로 굳음", aff: "차분하게 안정을 되찾고 상황을 봅니다." },
+    { name: "당황하다", cat: "cat-anx", desc: "예상치 못한 돌발 상황을 마주하여 대처 능력이 일시적으로 마비되고 허둥대는 상태", sit: "실수를 하거나 갑작스러운 질문을 받을 때", body: "얼굴이 화끈거림을 느끼고 머릿속이 하얘지며 손동작이 꼬임", aff: "당황해도 괜찮습니다. 지혜를 찾을 것입니다." },
+    { name: "두렵다", cat: "cat-anx", desc: "위협적이거나 해를 끼칠 만한 대상을 마주하여 도망치거나 저항하고 싶은 무서운 감정", sit: "압박을 주는 상대나 공포를 마주할 때", body: "몸이 떨리고 입술이 마르며 뒤로 물러나고 싶어짐", aff: "내 안의 용기를 믿으며 나를 지킵니다." },
+    { name: "무섭다", cat: "cat-anx", desc: "눈앞의 구체적인 위험이나 공포 대상 앞에서 자신을 보호하려는 방어 기제가 작동한 상태", sit: "천둥번개나 위험 요소를 발견할 때", body: "소름이 돋고식은땀이 흐르며 근육이 경직됨", aff: "나는 안전한 곳에 있습니다. 곧 지나갑니다." },
+    { name: "초조하다", cat: "cat-anx", desc: "일이 뜻대로 되지 않거나 기한에 임박하여 마음이 조급하고 애가 타는 상태", sit: "순서를 기다리거나 기한이 임박할 때", body: "다리를 떨거나 손톱을 만지작거리며 자꾸 시계를 봄", aff: "모든 것은 제때 이루어집니다. 나를 믿습니다." },
+    {"name": "당혹스럽다","cat": "cat-anx","desc": "예상치 못한 상황이나 질문에 직면하여 어떻게 반응해야 할지 몰라 마음이 갈피를 잡지 못하고 당황스러운 상태","sit": "갑작스러운 상황 변화나 당황스러운 질문을 받았을 때","body": "심장 박동이 빨라지고, 사고가 일시적으로 정지하며, 눈동자가 흔들리고 경직된 표정을 짓게 됨","aff": "예측할 수 없는 순간은 성장의 기회입니다. 지금의 당황스러움을 있는 그대로 받아들이고 천천히 대응합니다."},
+{
+  "name": "무안하다",
+  "cat": "cat-anx",
+  "desc": "예상치 못한 상황이나 타인의 시선 속에서 부끄럽고 어색하여 낯이 뜨거워지고 옴짝달싹하기 어려운 상태",
+  "sit": "예상치 못한 실수를 하거나 민망한 상황에 처해 남들의 시선을 의식하게 되었을 때",
+  "body": "얼굴이나 귀가 화끈거리고, 시선을 어디 두어야 할지 몰라 당황하며 몸이 굳어짐",
+  "aff": "남들 앞에서 쑥스럽고 민망한 순간도 나를 돌아보는 자연스러운 경험입니다. 그 어색함을 가만히 안아주고 숨을 고릅니다."
+},
+    { name: "부담스럽다", cat: "cat-anx", desc: "자신이 감당하기 어려운 무거운 책임이나 큰 기대를 요구받아 생기는 중압감", sit: "무리한 부탁을 받거나 책임이 무거울 때", body: "어깨와 목덜미가 묵직하고 가슴이 답답하게 압박됨", aff: "나는 내 한계를 존중하며 거절할 수 있습니다." },
+    { name: "막막하다", cat: "cat-anx", desc: "해결의 실마리가 전혀 보이지 않고 의지할 곳도 없어 어찌할 바를 모르는 무력한 상태", sit: "진로 등 선택지가 보이지 않을 때", body: "눈앞이 흐릿한 기분과 함께 깊은 숨이 자주 나옴", aff: "한 걸음씩 나아갑니다. 길은 만들어집니다." },
+    { name: "위축되다", cat: "cat-anx", desc: "비난이나 비교 등으로 인해 자신감을 잃고 마음이 조그맣게 오그라드는 상태", sit: "비난을 받거나 비교를 당할 때", body: "가슴을 웅크리게 되고 목소리가 기어들어 가듯 작아짐", aff: "나는 그 자체로 고유한 빛을 가진 존재입니다." },
+    { name: "꺼림칙하다", cat: "cat-anx", desc: "어떤 상황이나 태도가 도덕적, 논리적, 직관적으로 마음에 걸려 개운하지 않고 불쾌한 상태", sit: "상식적이지 않은 일을 접하거나, 내 가치관에 어긋나는 선택을 강요받을 때", body: "미간이 살짝 찌푸려지고 가슴 한쪽이 무겁거나 답답한 느낌이 듦", aff: "나는 내면의 소리에 귀를 기울이고, 명확함과 진실함을 선택할 수 있는 힘이 있습니다." },
+    { name: "찜찜하다", cat: "cat-anx", desc: "어떤 일을 마무리했음에도 여전히 찝찝함이 남아 마무리가 덜 된 듯한 상태", sit: "일을 확실히 처리하지 못했거나, 타인과의 관계에서 미묘한 앙금이 남았을 때", body: "머릿속에서 특정 생각이 맴돌며 시선이 불안정하게 흔들림", aff: "나는 현재의 불완전함을 수용하고, 필요한 만큼 최선을 다했음을 스스로 인정합니다." },
+    { name: "답답하다", cat: "cat-ang", desc: "마음의 소통이나 행동의 자유가 해소되지 못하고 무언가에 꽉 막혀 있는 듯한 기분", sit: "말이 통하지 않거나 정체되어 있을 때", body: "가슴 한복판이 꽉 막힌 느낌과 목이 조이는 듯함", aff: "답답함은 변화를 원한다는 신호입니다." },
+    { name: "억울하다", cat: "cat-ang", desc: "공정함과 진실이 훼손되어 자신의 정당함이 무시당했을 때 느끼는 분노와 속상함", sit: "오해받거나 기여가 무시당했을 때", body: "눈시울이 뜨거워지고 이가 갈리며 주먹에 힘이 들어감", aff: "진실은 나를 지켜줄 것입니다." },
+    { name: "짜증나다", cat: "cat-ang", desc: "피로나 불편함이 누적되어 마음에 여유가 없고 신경이 날카롭게 곤두선 상태", sit: "피로가 쌓인 상태에서 소음을 겪을 때", body: "얼굴 근육이 팽팽해지고 목소리가 날카워지며 미간을 찌푸림", aff: "나는 감정의 주인이며 평온을 선택합니다." },
+    { name: "불쾌하다", cat: "cat-ang", desc: "무례한 행동이나 마음에 들지 않는 환경으로 인해 기분이 상하고 꺼림칙한 상태", sit: "무례한 행동을 목격하거나, 위생적이지 못한 환경에 처했을 때", body: "미간이 찌푸려지고 몸이 움츠러들며, 기운이 소모되는 느낌이 듦", aff: "불편한 원인을 살피고, 나를 보호하기 위해 적절한 거리를 둡니다." },
+    { name: "거슬린다", cat: "cat-ang", desc: "어떤 대상의 행동이나 상황, 소리 등이 마음에 들지 않아 계속 신경이 쓰이고 불편한 상태", sit: "반복적인 소음이 들리거나, 상대방의 눈치 없고 무례한 태도가 지속될 때", body: "시선이 자꾸 불쾌한 대상을 향하고 미간이 찌푸려지며, 신경이 곤두서서 예민해짐", aff: "외부의 자극이 나의 평온함을 빼앗도록 허락하지 않으며, 나는 자극에 휩쓸리지 않고 나의 일에 집중할 수 있습니다." },
+    { name: "언짢다", cat: "cat-ang", desc: "마음에 차지 않아 기분이 개운하지 않고 약간 불쾌하거나 섭섭한 상태", sit: "예의 없는 대우를 받거나, 기대와 달리 상황이 좋지 않게 흘러갈 때", body: "미간이 찌푸려지고 입술을 굳게 다물게 되며, 어깨와 몸이 경직됨", aff: "나는 불쾌한 상황 속에서도 내면의 중심을 지키며, 나의 평온함을 선택할 권리가 있습니다." },
+    { name: "화나다", cat: "cat-ang", desc: "어떤 일이나 대상 때문에 몹시 언짢고 불쾌하여 감정이 격앙된 상태", sit: "자신의 뜻대로 일이 풀리지 않거나, 누군가에게 부당한 대우를 받았을 때", body: "얼굴이 붉어지고 호흡이 가빠지며, 목소리가 커지거나 심장 박동이 빨라짐", aff: "감정은 자연스러운 반응이지만, 나는 화를 건설적인 방법으로 표현하고 해소할 수 있습니다." },
+    { name: "분하다", cat: "cat-ang", desc: "억울한 일을 당하거나 자신의 무력함을 느껴 화가 나고 속상한 상태", sit: "부당한 오해를 받거나, 최선을 다했음에도 외부 요인으로 인해 실패하여 억울할 때", body: "주먹을 꽉 쥐거나 입술을 깨물게 되며, 가슴이 답답하고 억눌린 울음이 터질 것 같음", aff: "이 억울함과 분노는 나를 보호하려는 마음에서 옵니다. 나는 이 에너지를 나를 발전시키는 원동력으로 바꿀 수 있습니다." },
+    { name: "증오하다", cat: "cat-ang", desc: "특정 대상에 대해 극심한 반감과 혐오를 느끼며 몹시 미워하는 상태", sit: "나나 내가 소중하게 여기는 것을 심각하게 해친 대상을 떠올리거나 마주쳤을 때", body: "대상을 향해 눈빛이 차가워지고 온몸의 근육이 경직되며, 속에서 끓어오르는 듯한 열기를 느낌", aff: "누군가를 미워하는 마음은 결국 나를 지치게 합니다. 나는 상대를 위해서가 아니라 나의 해방을 위해 마음의 짐을 내려놓습니다." },
+    { name: "격노하다", cat: "cat-ang", desc: "참을 수 없을 만큼 감정이 폭발하여 몹시 맹렬하게 화를 내는 상태", sit: "도저히 용납할 수 없는 배신을 당하거나, 나의 핵심 가치나 존엄성이 심각하게 짓밟혔을 때", body: "이성을 잃고 소리를 지르거나, 온몸이 부들부들 떨리고 호흡이 통제되지 않음", aff: "나는 폭풍처럼 몰아치는 감정 속에서도 잠시 멈춰 서서 호흡 고르고, 이성적인 판단력을 되찾을 수 있습니다." },
+    { name: "괘씸하다", cat: "cat-ang", desc: "상대방이 마땅히 지켜야 할 도리나 예의를 어겨 몹시 얄밉고 분개하는 상태", sit: "호의를 베풀었는데도 배신하거나, 믿었던 사람이 건방지고 무례하게 굴 때", body: "어이가 없어 헛웃음이 나고 혀를 차게 되며, 상대를 매섭게 쏘아보게 됨", aff: "타인의 예의 없는 행동은 그 사람의 문제일 뿐입니다. 나는 상대의 수준에 맞춰 반응하지 않고 나의 품위를 지킵니다." },
+    { name: "밉다", cat: "cat-ang", desc: "대상의 행동이나 태도가 원망스러워 정서적 거리감을 두고 싶어지는 거부감", sit: "진심을 무시한 상대가 떠오를 때", body: "입술을 굳게 다물게 되고 상대 쪽으로 고개를 돌리기 싫어짐", aff: "미움 대신 나를 아끼는 마음을 채웁니다." },
+    { name: "원망스럽다", cat: "cat-ang", desc: "자신이 겪는 고통이나 아픔의 원인을 대상에게 돌리며 한탄하는 아픈 마음", sit: "결정적 순간에 곁에 없었던 이에 대한 서운함", body: "가슴 깊은 곳이 쓰리고 명치 부근이 딱딱해짐", aff: "기대를 내려놓고 스스로를 돕습니다." },
+    { name: "질투하다", cat: "cat-ang", desc: "타인의 성취나 소유를 바라보며 자신의 내면적 결핍이 날카롭게 자극되는 시기심", sit: "타인의 성과를 축하하기 힘들 때", body: "속이 뒤틀리는 느낌과 함께 가슴이 서늘해짐", aff: "타인의 성취는 나의 가능성을 보여주는 거울입니다." },
+    { name: "불편하다", cat: "cat-ang", desc: "내면의 평온이 깨져 대상이나 자리를 지혜롭게 피하고 싶어지는 방어 상태", sit: "가치관이 맞지 않는 사람과 있을 때", body: "몸이 뻣팎해지고 자꾸 자세를 바꾸게 되며 시선을 피함", aff: "나의 경계를 지키며 지혜롭게 지나갑니다." },
+    { name: "어색하다", cat: "cat-ang", desc: "서목한 관계나 낯선 분위기 속에서 말과 행동이 부자연스럽고 굳어있는 상태", sit: "서먹한 이와 단둘이 남겨졌을 때", body: "손을 어디에 둘지 모르겠고 미소가 부자연스러움", aff: "어색함조차 과정입니다. 가벼운 미소를 지어봅니다." },
+    { name: "황당하다", cat: "cat-ang", desc: "상식적이지 않거나 비논리적인 일을 마주하여 어처구니가 없고 기가 막힌 상태", sit: "터무니없는 거짓말을 들었을 때", body: "입이 벌어지고 헛웃음이 나오며 힘이 탁 풀림", aff: "황당한 일에 소중한 감정을 쏟지 않습니다." },
+    { name: "어이없다", cat: "cat-ang", desc: "상황이나 타인의 무례함이 상식 선을 크게 넘어서 말문이 막히고 기가 차는 상태", sit: "상식 밖의 행동이나 도를 넘은 무례함을 목격했을 때", body: "순간적으로 머릿속이 하얘지고, 헛웃음이 나며 가슴이 답답해짐", aff: "어이없는 상황에 휘둘리기보다, 내 중심을 잡고 상황과 한 걸음 거리를 줍니다." },
+    { name: "속상하다", cat: "cat-ang", desc: "뜻대로 되지 않은 상황 속에서 슬픔과 화가 미묘하게 얽혀 마음이 아린 상태", sit: "가깝고 소중한 이가 나의 배려를 무시할 때", body: "코끝이 찡해지고 가슴 중앙이 아릿하게 저려옴", aff: "나는 존중받을 자격이 있습니다." },
+    { name: "서운하다", cat: "cat-sad", desc: "기대했던 만큼의 관심이나 연결이 부족하여 마음에 씁쓸한 아쉬움이 남는 상태", sit: "특별한 날을 잊었거나 무관심할 때", body: "입꼬리가 처지고 가슴이 텅 빈 듯한 허전함이 느껴짐", aff: "서운함은 더 사랑받고 싶은 마음입니다." },
+    { name: "외롭다", cat: "cat-sad", desc: "세상이나 집단 속에서 누구에게도 온전히 이해받지 못한다고 느껴지는 쓸쓸함", sit: "군중 속이나 혼자 남겨진 밤", body: "팔다리가 차갑게 느껴지고 몸이 작아지는 듯한 오한", aff: "나는 나 자신과 먼저 친해지겠습니다." },
+    { name: "슬프다", cat: "cat-sad", desc: "소중한 존재나 가치를 잃어버린 상실의 아픔을 마음 가득 수용하고 정화하는 과정", sit: "이별이나 아픈 진실을 마주할 때", body: "눈시울이 뜨거워지고 온몸에 힘이 빠지며 가슴이 무거움", aff: "눈물은 상처 입은 마음을 씻어줍니다." },
+    {"name": "쓸쓸하다","cat": "cat-sad","desc": "주위에 아무도 없는 듯한 고요함 속에서 느껴지는 서글프고 허전한 마음","sit": "혼자 방에 앉아 창밖을 보거나, 북적이는 거리에서 문득 혼자라는 생각이 들 때","body": "마음 한구석이 텅 빈 것 같고, 몸의 온기가 살짝 빠져나가는 듯한 공허함","aff": "잠시 멈추어 나의 내면을 돌보는 시간을 가지며, 이 고요함 속에서 나를 따뜻하게 안아줍니다."},
+    { name: "우울하다", cat: "cat-sad", desc: "마음의 에너지가 급격히 낮아져 매사에 의욕이 없고 침잠해 있는 무거운 상태", sit: "무력감이 지속되거나 단절된 느낌일 때", body: "눈꺼풀이 무겁고 온몸이 젖은 솜처럼 바닥으로 가라앉음", aff: "이 또한 날씨일 뿐입니다. 해는 뜹니다." },
+    { name: "무기력하다", cat: "cat-sad", desc: "누적된 번아웃이나 실패로 인해 아무것도 하고 싶지 않고 에너지가 바닥난 상태", sit: "반복된 실패나 번아웃이 왔을 때", body: "손가락 하나 까딱하기 싫고목소리에 생기가 전혀 없음", aff: "지금은 뿌리를 내리는 쉼의 시간입니다." },
+    { name: "무력하다", cat: "cat-sad", desc: "내 힘으로는 도저히 현재의 상황을 바꿀 수 없다는 거대한 한계에 압도된 마음", sit: "반복되는 갈등 속에 해결책이 없을 때", body: "어깨가 축 처지고 심장 박동이 아주 느리고 약해짐", aff: "아무것도 하지 않아도 괜찮습니다." },
+    { name: "후회하다", cat: "cat-sad", desc: "과거에 했던 자신의 선택이나 행동에 아쉬움과 미련을 느끼며 스스로를 성찰함", sit: "기회를 놓쳤거나 상처를 주었을 때", body: "가슴을치고 싶거나 머리를 감싸 쥐게 되며 속이 쓰림", aff: "과거의 실수에서 지혜를 배워 성장합니다." },
+    { name: "좌절하다", cat: "cat-sad", desc: "노력하던 목표가 무너지고 희망이 꺾여 다시 일어설 엄두가 나지 않는 아픈 상태", sit: "노력이 실패로 돌아가 엄두가 나지 않을 때", body: "무릎에 힘이 풀리고 가슴이 턱 막혀 숨쉬기가 힘들듦", aff: "좌절은 멈춤이지 끝이 아닙니다." },
+    { name: "지루하다", cat: "cat-sad", desc: "현재 하는 행동에서 어떠한 흥미나 의미도 발견하지 못해 시간이 정체된 느낌", sit: "단조로운 일상이 반복될 때", body: "하품이 나오고 턱을 괴거나 몸을 비틀게 됨", aff: "지루함 속에 영감의 씨앗이 있습니다." },
+    { name: "피곤하다", cat: "cat-sad", desc: "신체적, 정신적 한계를 초과하여 몸이 강력하게 휴식을 요청하는 고갈 신호", sit: "쉼 없이 달려와 모든 의욕이 사라질 때", body: "머리를 무겁고 눈이 따가우며 뒷목이 뻣뻣함", aff: "고생한 나에게 깊은 휴식을 선물합니다." },
+    {"name": "지친다", "cat": "cat-sad", "desc": "긴 시간 동안의 노력이나 갈등으로 인해 마음의 탄력을 잃고, 더 이상 버틸 에너지가 남아있지 않은 상태", "sit": "해결되지 않는 문제를 계속 안고 있거나, 스스로에게 너무 엄격한 기준을 적용해왔을 때", "body": "어깨가 무겁게 처지고 한숨이 잦아지며, 무표정이 익숙해지고 감각이 무뎌짐", "aff": "충분히 애썼습니다. 이제는 아무것도 하지 않고 오롯이 나를 쉬게 할 때입니다." },
+    {"name": "의욕이 없다", "cat": "cat-sad", "desc": "무언가를 시작하거나 성취하고 싶다는 내면의 동기가 완전히 사라져, 모든 일이 무의미하게 느껴지는 상태", "sit": "번아웃이 오거나, 반복된 실패로 인해 미래에 대한 기대가 희미해졌을 때", "body": "몸의 움직임이 느려지고 눈빛에 생기가 없으며, 시간의 흐름을 무감각하게 받아들임", "aff": "지금의 멈춤은 더 멀리 나아가기 위한 뿌리 내림입니다. 조급해하지 않아도 괜찮습니다." },  
+    {"name": "침울하다", "cat": "cat-sad", "desc": "걱정이나 근심에 잠겨서 마음이 우울한 상태", "sit": "예기치 않은 실망스러운 소식을 듣거나, 깊은 상실감이나 후회에 잠겨 혼자만의 생각에 빠져들 때", "body": "고개를 푹 숙이거나 한숨을 자주 쉬며, 주변의 밝은 자극이나 대화에 거의 반응하지 않고 굳어 있음", "aff": "마음에 짙은 구름이 낀 것처럼 무거운 날도 있습니다. 이 감정이 지나가기를 억지로 서두르지 말고, 잠시 기대어 쉬어가도 괜찮습니다."},
+    { name: "부럽다", cat: "cat-sad", desc: "타인의 훌륭한 처지나 성취를 보며 자신의 감춰진 결핍이 자극되는 미묘한 마음", sit: "친구의 성공 소식을 보았을 때", body: "시선이 자꾸 아래로 향하고 가슴 한구석이 쿡쿡 쑤심", aff: "나에게는 나만의 고유한 행복이 이미 있습니다." },
+    { name: "괴롭다", cat: "cat-sad", desc: "신체적, 정신적 통증이나 고통이 극심하여 당장 그 상황에서 벗어나고픈 간절함", sit: "상처가 떠오르거나 현실이 힘들 때", body: "온몸의 근육이 뒤틀리는 듯하고 가슴이 찢어지는 통증", aff: "고통을 따뜻하게 안아주며 치유합니다." },
+    { name: "그리워하다", cat: "cat-sad", desc: "지금은 곁에 없는 소중한 대상과의 추억을 떠올리며 다시 연결되고 싶은 상태", sit: "이별한 이의 유품이나 흔적을 볼 때", body: "가슴 부근이 아련하게 저리고 목소리가 떨림", aff: "그리움은 내가 사랑했다는 증거입니다." },
+    { name: "실망하다", cat: "cat-sad", desc: "품었던 기대가 허무하게 무너지면서 상대에 대한 굳건한 신뢰가 흔들리는 상태", sit: "믿었던 이의 무심한 모습을 보았을 때", body: "몸에서 기운이 빠져나가며 입안이 마르는 느낌", aff: "실망은 환상이 걷힌 자리에 진실을 세우는 일입니다." },
+    {"name": "자괴감이 든다","cat": "cat-sad","desc": "스스로의 기대치에 미치지 못한 자신의 모습이나 행동을 보며 겪는 깊은 부끄러움과 실망감","sit": "나의 실수가 반복되거나, 스스로에게 실망스러운 결정을 내렸을 때","body": "가슴 한쪽이 묵직하게 가라앉고 고개가 숙여지며 무기력함이 느껴짐","aff": "실수는 과정의 일부입니다. 나를 비난하기보다 있는 그대로의 나를 안아줍니다."},
+    { name: "서럽다", cat: "cat-sad", desc: "오해나 외로움 속에서 억울함과 슬픔이 제어할 수 없이 북받쳐 오르는 아픈 마음", sit: "혼자 아프거나 오해받을 때", body: "어깨를 떨며 흐느끼게 되고 가슴이 요동침", aff: "내 마음의 울음을 충분히 들어주겠습니다." },
+    { name: "안타깝다", cat: "cat-sad", desc: "상황을 좋게 개선해주고 싶으나 자신의 힘으로는 지켜볼 수밖에 없어 애가 타는 상태", sit: "도움을 주고 싶지만 지켜만 봐야 할 때", body: "손바닥을 비비거나 발을 동동 구르며 가슴이 타는 듯함", aff: "나의 기도가 작은 위로가 되길 바랍니다." },
+    { name: "아쉽다", cat: "cat-sad", desc: "바라던 바가 완벽히 채워지지 않고 무언가 미련이나 부족함이 남은 섭섭한 마음", sit: "조금만 더 노력했거나 기회가 있었다면 결과가 달랐을 때", body: "입술을 깨물거나 한숨을 깊게 쉬며 가슴 한구석이 허전함", aff: "다음에는 당신이 원하는 결과를 꼭 얻기를 응원합니다." },
+    { name: "허탈하다", cat: "cat-sad", desc: "쏟아부은 노력과 기대가 한순간에 수포로 돌아가 마음속에 큰 구멍이 뚫린 허전함", sit: "노력이 수포로 돌아갔을 때", body: "팔다리에 힘이 하나도 없고 가슴 속이 텅 빈 구멍 같음", aff: "비워진 마음을 인정하며 새로운 에너지를 기다립니다." }
 ];
 
-/* --- 데이터 로컬 저장 로직 (Supabase 완전 제거) --- */
-function getStorageKey() { 
-    const u = document.getElementById("userSelect").value;
-    const e = document.getElementById("eventSelect").value;
-    return `mindApp_${u || "guest"}_${e || "default"}`; 
+const getEl = id => document.getElementById(id);
+const getVal = id => { const e = getEl(id); return e ? e.value : ""; };
+const getTxt = id => { const e = getEl(id); return e ? e.innerText : ""; };
+const setVal = (id, val) => { const el = getEl(id); if(el) el.value = val; };
+const setTxt = (id, val) => { const el = getEl(id); if(el) el.innerText = val; };
+
+function getStorageKey() { return `mindApp_${getVal("userSelect") || "guest"}_${getVal("eventSelect") || "default"}`; }
+
+// 🟢 3번 항목 문자열 통합 헬퍼 함수
+function getStep3Combined() {
+    return [getVal('step3_1')||"", getVal('step3_2')||"", getVal('step3_3')||""].join('|||');
 }
 
-function triggerManualSave() {
+// 🟢 3번 항목 문자열 분해 및 세팅 헬퍼 함수
+function setStep3Split(val) {
+    val = val || "";
+    if (val.includes('|||')) {
+        const p = val.split('|||');
+        setVal('step3_1', p[0]);
+        setVal('step3_2', p[1]);
+        setVal('step3_3', p[2]);
+    } else {
+        setVal('step3_1', val);
+        setVal('step3_2', '');
+        setVal('step3_3', '');
+    }
+    ['step3_1', 'step3_2', 'step3_3'].forEach(id => {
+        autoResizeTextarea(getEl(id));
+    });
+}
+
+function manualSave() {
+    const user = getVal("userSelect"), event = getVal("eventSelect");
+    if(!user || !event || user === "사용자 없음" || event === "사건 없음") return alert("사용자와 사건을 먼저 설정해주세요.");
     saveAllToLocal();
-    alert("💾 브라우저 로컬 스토리지에 저장이 완료되었습니다!");
+    alert("✅ 기기에 저장되었습니다!");
 }
 
-/* --- 공통 유틸리티 --- */
-function autoResizeTextarea(element) {
-    if (!element) return;
-    element.style.height = 'auto'; 
-    element.style.height = element.scrollHeight + 'px'; 
+function exportData() {
+    if(confirm("모든 데이터를 백업 파일로 저장하시겠습니까?")) {
+        const data = JSON.stringify(localStorage);
+        const blob = new Blob([data], {type: "application/json"});
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `mindApp_backup_${new Date().toISOString().slice(0,10)}.json`;
+        a.click();
+        URL.revokeObjectURL(url);
+    }
 }
+
+function importData() {
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.accept = 'application/json';
+    input.onchange = e => {
+        const file = e.target.files[0];
+        if (!file) return;
+        if(confirm("기존 데이터가 덮어씌워질 수 있습니다. 복원하시겠습니까?")) {
+            const reader = new FileReader();
+            reader.onload = ev => {
+                try {
+                    const parsed = JSON.parse(ev.target.result);
+                    for (let k in parsed) {
+                        localStorage.setItem(k, parsed[k]);
+                    }
+                    alert("✅ 데이터 복원이 완료되었습니다. 페이지를 새로고침합니다.");
+                    location.reload();
+                } catch(err) {
+                    alert("❌ 백업 파일을 읽는 중 오류가 발생했습니다.");
+                }
+            };
+            reader.readAsText(file);
+        }
+    };
+    input.click();
+}
+
+function autoResizeTextarea(el) { if (!el) return; el.style.height = 'auto'; el.style.height = el.scrollHeight + 'px'; }
 
 function toggleAdminPanel() {
-    const content = document.getElementById("adminContent");
-    const icon = document.getElementById("toggleIcon");
-    const statusText = document.getElementById("adminStatusText");
-    const user = document.getElementById("userSelect").value || "없음";
-    const event = document.getElementById("eventSelect").value || "없음";
-    if (content.classList.contains("show")) {
-        content.classList.remove("show"); icon.innerText = "▼";
-        statusText.innerText = `⚙️ 설정 (사용자: ${user} / 사건: ${event})`;
-    } else {
-        content.classList.add("show"); icon.innerText = "▲";
-        statusText.innerText = "⚙️ 사용자 및 사건 설정";
-    }
+    const content = getEl("adminContent"), icon = getEl("toggleIcon"), status = getEl("adminStatusText");
+    const isShow = content.classList.toggle("show");
+    icon.innerText = isShow ? "▲" : "▼";
+    status.innerText = isShow ? "⚙️ 사용자 및 사건 설정" : `⚙️ 설정 (사용자: ${getVal("userSelect") || "없음"} / 사건: ${getVal("eventSelect") || "없음"})`;
 }
 
 function showSection(type) {
     document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
     document.querySelectorAll('.content-section').forEach(s => s.classList.remove('active'));
-    document.getElementById('btn-' + (type=='record'?'record':type)).classList.add('active');
-    document.getElementById(type + '-section').classList.add('active');
-    document.getElementById('fixedBottomBar').style.display = (type === 'record') ? 'flex' : 'none';
+    getEl('btn-' + type).classList.add('active'); 
+    getEl(type + '-section').classList.add('active');
+    
+    getEl('fixedBottomBar').style.display = (type === 'record') ? 'flex' : 'none';
     if(type !== 'record') renderGrid(type);
-    updateContextDisplay(document.getElementById('step1').value);
+    
+    const step1Val = getVal('step1');
+    getEl('context-display-emotions').innerText = step1Val || "기록장에서 사건을 먼저 입력해 보세요.";
+    getEl('context-display-needs').innerText = step1Val || "기록장에서 사건을 먼저 입력해 보세요.";
+    getEl('context-display-judgment').innerText = step1Val || "기록장에서 사건을 먼저 입력해 보세요.";
+}
+
+function showSubEmotion(type) {
+    getEl('btn-sub-cards').classList.remove('active'); getEl('btn-sub-plutchik').classList.remove('active');
+    getEl('sub-emotion-cards').style.display = 'none'; getEl('sub-emotion-plutchik').style.display = 'none';
+    if(type === 'cards') { getEl('btn-sub-cards').classList.add('active'); getEl('sub-emotion-cards').style.display = 'block'; }
+    else { getEl('btn-sub-plutchik').classList.add('active'); getEl('sub-emotion-plutchik').style.display = 'block'; }
 }
 
 function updateContextDisplay(val) {
-    const text = val.trim() || "기록장에서 사건을 먼저 입력해 보세요.";
-    document.getElementById('context-display-emotions').innerText = text;
-    document.getElementById('context-display-needs').innerText = text;
+    const txt = val.trim() || "기록장에서 사건을 먼저 입력해 보세요.";
+    getEl('context-display-emotions').innerText = txt; getEl('context-display-needs').innerText = txt; getEl('context-display-judgment').innerText = txt;
 }
 
-function addToRecord(type, name, btnElement) {
-    const stepId = (type === 'emotions') ? 'step2' : 'step4';
-    const target = document.getElementById(stepId);
-    const sourceData = (type === 'emotions') ? emotionsData : needsData;
-    const item = sourceData.find(d => d.name === name);
-    const description = item ? item.desc : "";
-    const entryText = `• ${name} : ${description}`;
+// 🟢 모달창에서 선택에 따라 타겟 변경
+function addToRecord(type, name, btn) {
+    let targetId = 'step4';
+    let dataType = type;
     
-    let currentValue = target.value || target.innerText;
-
-    const lines = currentValue.split('\n');
-    const isDuplicate = lines.some(line => line.trim().startsWith(`• ${name} :`));
-
-    if (isDuplicate) { 
-        alert("이미 기록장에 추가된 항목입니다.");
-        closeModal();
-        return; 
+    if (type === 'emotions') {
+        targetId = 'step2';
+    } else if (type === 'judgment_other') {
+        targetId = 'step3_2';
+        dataType = 'judgment';
+    } else if (type === 'judgment_self') {
+        targetId = 'step3_3';
+        dataType = 'judgment';
     }
-
-    const newValue = currentValue.trim() ? `${currentValue.trim()}\n${entryText}` : entryText;
     
-    if (target.tagName === "TEXTAREA") {
-        target.value = newValue; 
-        autoResizeTextarea(target); 
-    } else {
-        target.innerText = newValue;
-    }
+    const target = getEl(targetId);
+    const item = (dataType === 'emotions' ? emotionsData : (dataType === 'needs' ? needsData : judgmentData)).find(d => d.name === name);
+    const entryText = `• ${name} : ${item ? item.desc : ""}`;
+    let cur = target.value || target.innerText || "";
+    if (cur.split('\n').some(l => l.trim().startsWith(`• ${name} :`))) { alert("이미 기록장에 추가된 항목입니다."); return closeModal(); }
+    const next = cur.trim() ? `${cur.trim()}\n${entryText}` : entryText;
+    
+    if (target.tagName === "TEXTAREA") { target.value = next; autoResizeTextarea(target); } else { target.innerText = next; }
     
     saveAllToLocal();
-
-    const originalText = btnElement.innerHTML;
-    btnElement.innerHTML = `✅ 추가됨`;
-    
-    setTimeout(() => {
-        btnElement.innerHTML = originalText;
-        closeModal(); 
-    }, 300);
+    const orig = btn.innerHTML; btn.innerHTML = `✅ 추가됨`;
+    setTimeout(() => { btn.innerHTML = orig; closeModal(); }, 300);
 }
 
 function openModal(type, name) {
-    const data = type === 'needs' ? needsData : emotionsData;
-    const item = data.find(d => d.name === name);
-    const modal = document.getElementById('cardModal');
-    const body = document.getElementById('modalBody');
+    let item;
+    if (type === 'needs') item = needsData.find(d => d.name === name);
+    else if (type === 'judgment') item = judgmentData.find(d => d.name === name);
+    else item = emotionsData.find(d => d.name === name);
+    if (!item) return;
+
+    const modal = getEl('cardModal'), body = getEl('modalBody');
+    const emojis = {joy:"😊", love:"❤️", peace:"🌿", anx:"😰", ang:"🔥", sad:"💧", auto:"🦋", conn:"🤝", well:"🍎", meaning:"💎", low:"📉", irr:"🌀", res:"⚖️", neg:"🚫", pre:"🧐"};
+    const catKey = item.cat.split('-')[1];
+    modal.querySelector('.modal-content').style.borderTop = `10px solid var(--accent-blue)`;
     
-    const emojis = {joy:"😊", love:"❤️", peace:"🌿", anx:"😰", ang:"🔥", sad:"💧", auto:"🦋", conn:"🤝", well:"🍎", meaning:"💎"};
-    const emoji = emojis[item.cat.split('-')[1]] || "✨";
-
-    let content = `
-        <div style="font-size:60px; text-align:center; margin-bottom:10px;">${emoji}</div>
-        <div class="title">${item.name}</div>
-        <div class="desc">${item.desc}</div>
-    `;
-
+    let html = `<div style="font-size:60px; text-align:center; margin:20px 0 10px;">${emojis[catKey] || "✨"}</div><div class="title">${item.name}</div><div class="desc">${item.desc}</div>`;
     if (type === 'needs') {
-        content += `
-            <span class="section-label">충족 시</span>
-            <div>${item.sat.map(s => `<span class="emotion-tag tag-sat">${s}</span>`).join('')}</div>
-            <span class="section-label">미충족 시</span>
-            <div>${item.unsat.map(s => `<span class="emotion-tag tag-unsat">${s}</span>`).join('')}</div>
-            <div class="action-box" style="margin-top:20px;">${item.action}</div>
-        `;
+        html += `<span class="section-label">충족 시</span><div>${item.sat.map(s => `<span class="emotion-tag tag-sat">${s}</span>`).join('')}</div>
+                 <span class="section-label">미충족 시</span><div>${item.unsat.map(s => `<span class="emotion-tag tag-unsat">${s}</span>`).join('')}</div>
+                 <div class="action-box" style="margin-top:20px;">${item.action}</div>`;
+        html += `<button class="add-to-record-btn" style="margin-top:25px;" onclick="addToRecord('${type}', '${item.name}', this)">＋ 욕구 추가</button>`;
+    } else if (type === 'judgment') {
+        html += `<span class="section-label">상황</span><div class="content-text">${item.sit}</div><span class="section-label">몸의 상태</span><div class="body-status">${item.body}</div>
+                 <span class="section-label">확언</span><div class="affirmation-box" style="background:#f9f9f9; padding:15px; border-radius:10px; font-style:italic;">"${item.aff}"</div>`;
+        html += `<div style="display:flex; gap:10px; margin-top:25px;">
+                    <button class="add-to-record-btn" style="background:var(--danger-red); margin-top:0;" onclick="addToRecord('judgment_other', '${item.name}', this)">＋ 상대에 대한 판단 추가</button>
+                    <button class="add-to-record-btn" style="background:var(--primary-blue); margin-top:0;" onclick="addToRecord('judgment_self', '${item.name}', this)">＋ 나에 대한 판단 추가</button>
+                 </div>`;
     } else {
-        content += `
-            <span class="section-label">상황</span><div class="content-text">${item.sit}</div>
-            <span class="section-label">몸의 상태</span><div class="body-status">${item.body}</div>
-            <span class="section-label">확언</span><div class="affirmation-box" style="background:#f9f9f9; padding:15px; border-radius:10px; font-style:italic;">"${item.aff}"</div>
-        `;
+        html += `<span class="section-label">상황</span><div class="content-text">${item.sit}</div><span class="section-label">몸의 상태</span><div class="body-status">${item.body}</div>
+                 <span class="section-label">확언</span><div class="affirmation-box" style="background:#f9f9f9; padding:15px; border-radius:10px; font-style:italic;">"${item.aff}"</div>`;
+        html += `<button class="add-to-record-btn" style="margin-top:25px;" onclick="addToRecord('${type}', '${item.name}', this)">＋ 기록장에 추가</button>`;
     }
-
-    content += `<button class="add-to-record-btn" style="margin-top:25px;" onclick="addToRecord('${type}', '${item.name}', this)">＋ 기록장에 추가</button>`;
-
-    body.innerHTML = content;
-    modal.style.display = 'flex';
-    document.body.style.overflow = 'hidden';
+    
+    body.innerHTML = html; modal.style.display = 'flex'; document.body.style.overflow = 'hidden';
 }
 
 function closeModal(event) {
-    if (event && event.target !== event.currentTarget) return;
-    const modal = document.getElementById('cardModal');
-    if (modal) {
-        modal.style.display = 'none';
-        document.body.style.overflow = 'auto';
-    }
+    if (event && event.target.id !== 'cardModal') return;
+    getEl('cardModal').style.display = 'none'; document.body.style.overflow = 'auto';
 }
-	
-function renderGrid(type) {
-    const data = type === 'needs' ? needsData : emotionsData;
-    const index = document.getElementById(type + '-index');
-    
-    if(index.children.length > 0) return;
 
+function renderGrid(type) {
+    const idx = getEl(type + '-index'); if (idx.children.length > 0) return;
+    let data = type === 'needs' ? needsData : (type === 'judgment' ? judgmentData : emotionsData);
     data.forEach(item => {
         const link = document.createElement('div');
         link.className = `item-link link-${item.cat.split('-')[1]}`;
-        link.innerText = item.name;
-        link.onclick = () => openModal(type, item.name);
-        index.appendChild(link);
+        link.innerText = item.name; link.onclick = () => openModal(type, item.name);
+        idx.appendChild(link);
     });
 }
 
-function addUser() { 
-    const n = document.getElementById("newUserName").value.trim(); 
-    if(!n) return; 
-    let u = JSON.parse(localStorage.getItem("mindUsers") || "[]"); 
-    if(!u.includes(n)) u.push(n); 
-    localStorage.setItem("mindUsers", JSON.stringify(u)); 
-    document.getElementById("newUserName").value = "";
-    renderUserList(n); 
+function addUser() {
+    const n = getVal("newUserName").trim(); if(!n) return;
+    let u = JSON.parse(localStorage.getItem("mindUsers") || "[]"); if(!u.includes(n)) u.push(n);
+    localStorage.setItem("mindUsers", JSON.stringify(u)); setVal("newUserName", ""); renderUserList(n);
 }
 
 function deleteUser() {
-    const userName = document.getElementById("userSelect").value;
-    if (!userName || userName === "사용자 없음") return;
-    if (confirm(`'${userName}'의 모든 데이터를 삭제하시겠습니까?`)) {
-        let users = JSON.parse(localStorage.getItem("mindUsers") || "[]");
-        users = users.filter(u => u !== userName);
-        localStorage.setItem("mindUsers", JSON.stringify(users));
-        renderUserList();
+    const uName = getVal("userSelect"); if (!uName || uName === "사용자 없음") return;
+    if (confirm(`'${uName}'의 모든 데이터를 삭제하시겠습니까?`)) {
+        let u = JSON.parse(localStorage.getItem("mindUsers") || "[]").filter(x => x !== uName);
+        localStorage.setItem("mindUsers", JSON.stringify(u)); renderUserList();
     }
 }
 
-function renderUserList(sN) { 
-    const s = document.getElementById("userSelect"); 
-    const u = JSON.parse(localStorage.getItem("mindUsers") || "[]"); 
-    if (u.length === 0) s.innerHTML = "<option>사용자 없음</option>";
-    else {
-        s.innerHTML = u.map(x => `<option value="${x}">${x}</option>`).join(''); 
-        if(sN) s.value = sN;
-    }
-    changeUser(); 
+function renderUserList(sN) {
+    const s = getEl("userSelect"), u = JSON.parse(localStorage.getItem("mindUsers") || "[]");
+    s.innerHTML = u.length ? u.map(x => `<option value="${x}">${x}</option>`).join('') : "<option>사용자 없음</option>";
+    if(sN && u.includes(sN)) s.value = sN; changeUser();
 }
 
-function changeUser() { 
-    const currentUser = document.getElementById("userSelect").value;
-    localStorage.setItem("lastSelectedUser", currentUser); 
-    renderEventList(); 
+function changeUser() { localStorage.setItem("lastSelectedUser", getVal("userSelect")); renderEventList(); }
+
+function addEvent() {
+    const u = getVal("userSelect"), e = getVal("newEventName").trim(); if(!u || u === "사용자 없음" || !e) return;
+    let evs = JSON.parse(localStorage.getItem(`events_${u}`) || "[]").filter(x => x !== e); evs.unshift(e);
+    localStorage.setItem(`events_${u}`, JSON.stringify(evs)); setVal("newEventName", ""); renderEventList(e);
 }
 
-function addEvent() { 
-    const u = document.getElementById("userSelect").value; 
-    const e = document.getElementById("newEventName").value.trim(); 
-    if(!u || u === "사용자 없음" || !e) return; 
-    let evs = JSON.parse(localStorage.getItem(`events_${u}`) || "[]"); 
-    if(!evs.includes(e)) evs.push(e); 
-    localStorage.setItem(`events_${u}`, JSON.stringify(evs)); 
-    document.getElementById("newEventName").value = "";
-    renderEventList(e); 
+function editEvent() {
+    const u = getVal("userSelect"), oldEvent = getVal("eventSelect");
+    if (!u || u === "사용자 없음" || !oldEvent || oldEvent === "사건 없음") return alert("수정할 사건을 먼저 선택해주세요.");
+    const newEvent = prompt(`사건 '${oldEvent}'의 새로운 이름을 입력하세요:`, oldEvent);
+    if (!newEvent || newEvent.trim() === "" || newEvent.trim() === oldEvent) return;
+    
+    const eName = newEvent.trim(); let evs = JSON.parse(localStorage.getItem(`events_${u}`) || "[]");
+    if (evs.includes(eName)) return alert("이미 존재하는 사건명입니다.");
+    
+    const idx = evs.indexOf(oldEvent); if (idx !== -1) { evs[idx] = eName; localStorage.setItem(`events_${u}`, JSON.stringify(evs)); }
+    const oldPrefix = `mindApp_${u}_${oldEvent}`, newPrefix = `mindApp_${u}_${eName}`;
+    const suffixes = ["_title", "_step1", "_step2", "_step3", "_step4", "_step5", "_step6", "_step7"];
+    suffixes.forEach(suffix => { const val = localStorage.getItem(oldPrefix + suffix); if (val !== null) { localStorage.setItem(newPrefix + suffix, val); localStorage.removeItem(oldPrefix + suffix); } });
+    if (localStorage.getItem(`lastSelectedEvent_${u}`) === oldEvent) localStorage.setItem(`lastSelectedEvent_${u}`, eName);
+    renderEventList(eName); alert(`사건명이 성공적으로 변경되었습니다.`);
 }
 
 function deleteEvent() {
-    const u = document.getElementById("userSelect").value;
-    const eventName = document.getElementById("eventSelect").value;
-    if (!eventName || eventName === "사건 없음") return;
-    if (confirm(`사건 '${eventName}'을 삭제합니까?`)) {
-        let evs = JSON.parse(localStorage.getItem(`events_${u}`) || "[]");
-        evs = evs.filter(e => e !== eventName);
-        localStorage.setItem(`events_${u}`, JSON.stringify(evs));
-        renderEventList();
+    const u = getVal("userSelect"), evName = getVal("eventSelect"); if (!evName || evName === "사건 없음") return;
+    if (confirm(`사건 '${evName}'을 삭제합니까?`)) {
+        let evs = JSON.parse(localStorage.getItem(`events_${u}`) || "[]").filter(x => x !== evName);
+        localStorage.setItem(`events_${u}`, JSON.stringify(evs)); renderEventList();
     }
 }
 
-function renderEventList(sE) { 
-    const u = document.getElementById("userSelect").value; 
-    const s = document.getElementById("eventSelect"); 
-    if (!u || u === "사용자 없음") {
-        s.innerHTML = "<option>사건 없음</option>";
-        syncTitleAndLoad(); return;
-    }
-    const evs = JSON.parse(localStorage.getItem(`events_${u}`) || "[]"); 
-    if (evs.length === 0) s.innerHTML = "<option>사건 없음</option>";
-    else {
-        s.innerHTML = evs.map(x => `<option value="${x}">${x}</option>`).join(''); 
-        const lastEvent = localStorage.getItem(`lastSelectedEvent_${u}`);
-        if(sE) s.value = sE; else if (lastEvent && evs.includes(lastEvent)) s.value = lastEvent;
-    }
-    syncTitleAndLoad(); 
+function renderEventList(sE) {
+    const u = getVal("userSelect"), s = getEl("eventSelect");
+    if (!u || u === "사용자 없음") { s.innerHTML = "<option>사건 없음</option>"; return syncTitleAndLoad(); }
+    const evs = JSON.parse(localStorage.getItem(`events_${u}`) || "[]");
+    s.innerHTML = evs.length ? evs.map(x => `<option value="${x}">${x}</option>`).join('') : "<option>사건 없음</option>";
+    const last = localStorage.getItem(`lastSelectedEvent_${u}`);
+    if(sE) s.value = sE; else if (last && evs.includes(last)) s.value = last;
+    syncTitleAndLoad();
 }
 
-function syncTitleAndLoad() { 
-    const u = document.getElementById("userSelect").value;
-    const e = document.getElementById("eventSelect").value;
+function syncTitleAndLoad() {
+    const u = getVal("userSelect"), e = getVal("eventSelect");
     if(u && u !== "사용자 없음") localStorage.setItem("lastSelectedUser", u);
     if(e && e !== "사건 없음") localStorage.setItem(`lastSelectedEvent_${u}`, e);
     if (!u || u === "사용자 없음" || !e || e === "사건 없음") {
-        document.getElementById("mainTitle").value = "";
-        for(let i=1; i<=8; i++) {
-            const el = document.getElementById("step"+i);
-            if(el) el.tagName === "TEXTAREA" ? el.value = "" : el.innerText = "";
-        }
-        loadStep9Global(); return;
+        setVal("mainTitle", ""); 
+        setStep3Split("");
+        for(let i=1; i<=7; i++) { if(i===3) continue; const el = getEl("step"+i); if(el) el.tagName === "TEXTAREA" ? el.value = "" : el.innerText = ""; }
+        return;
     }
-    const key = getStorageKey(); 
-    document.getElementById("mainTitle").value = localStorage.getItem(key + "_title") || e || "";
-    for(let i=1; i<=8; i++) {
-        const val = localStorage.getItem(key + "_step" + i) || "";
-        const el = document.getElementById("step"+i);
-        if(!el) continue;
-        if(el.tagName === "TEXTAREA") { el.value = val; autoResizeTextarea(el); }
-        else el.innerText = val;
+    let evs = JSON.parse(localStorage.getItem(`events_${u}`) || "[]");
+    if (evs.includes(e) && evs[0] !== e) {
+        evs = evs.filter(x => x !== e); evs.unshift(e); localStorage.setItem(`events_${u}`, JSON.stringify(evs));
+        getEl("eventSelect").innerHTML = evs.map(x => `<option value="${x}">${x}</option>`).join(''); getEl("eventSelect").value = e;
     }
-    updateContextDisplay(document.getElementById('step1').value);
-    loadStep9Global();
-}
+    const key = getStorageKey(); setVal("mainTitle", localStorage.getItem(key + "_title") || e || "");
+    
+    setStep3Split(localStorage.getItem(key + "_step3") || "");
 
-function loadStep9Global() {
-    const q1 = localStorage.getItem("mindApp_global_step9") || "";
-    const q2 = localStorage.getItem("mindApp_global_step9_extra") || "";
-    
-    const el1 = document.getElementById("step9");
-    const el2 = document.getElementById("step9_extra");
-    
-    if (el1) { el1.value = q1; autoResizeTextarea(el1); }
-    if (el2) { el2.value = q2; autoResizeTextarea(el2); }
+    for(let i=1; i<=7; i++) {
+        if (i===3) continue;
+        const val = localStorage.getItem(key + "_step" + i) || "", el = getEl("step"+i); if(!el) continue;
+        if(el.tagName === "TEXTAREA") { el.value = val; autoResizeTextarea(el); } else el.innerText = val;
+    }
+    updateContextDisplay(getVal('step1'));
 }
 
 function saveAllToLocal() {
-    const u = document.getElementById("userSelect").value;
-    const e = document.getElementById("eventSelect").value;
-    
-    localStorage.setItem("mindApp_global_step9", document.getElementById("step9").value);
-    localStorage.setItem("mindApp_global_step9_extra", document.getElementById("step9_extra").value);
-    
+    const u = getVal("userSelect"), e = getVal("eventSelect");
     if (!u || u === "사용자 없음" || !e || e === "사건 없음") return;
-    const key = getStorageKey();
-    localStorage.setItem(key + "_title", document.getElementById("mainTitle").value);
-    for(let i=1; i<=8; i++) {
-        const el = document.getElementById("step" + i);
-        if(!el) continue;
-        const val = el.tagName === "TEXTAREA" ? el.value : el.innerText;
-        localStorage.setItem(key + "_step" + i, val);
+    let evs = JSON.parse(localStorage.getItem(`events_${u}`) || "[]");
+    if (evs.includes(e) && evs[0] !== e) {
+        evs = evs.filter(x => x !== e); evs.unshift(e); localStorage.setItem(`events_${u}`, JSON.stringify(evs));
+        getEl("eventSelect").innerHTML = evs.map(x => `<option value="${x}">${x}</option>`).join(''); getEl("eventSelect").value = e;
+    }
+    const key = getStorageKey(); localStorage.setItem(key + "_title", getVal("mainTitle"));
+    
+    localStorage.setItem(key + "_step3", getStep3Combined());
+
+    for(let i=1; i<=7; i++) {
+        if(i===3) continue;
+        const el = getEl("step" + i); if(el) localStorage.setItem(key + "_step" + i, el.tagName === "TEXTAREA" ? el.value : el.innerText); 
     }
 }
 
-/* --- 이미지 및 기능 제어 --- */
 async function makeImage() {
-    const captureArea = document.getElementById("capture");
-    const shareBtn = document.getElementById("shareBtn");
-    shareBtn.disabled = true; shareBtn.innerText = "생성 중...";
+    const btn = getEl("shareBtn"); if (btn.disabled) return;
+    btn.disabled = true; btn.innerText = "생성 중...";
+
     try {
-        const canvas = await html2canvas(captureArea, {
+        const canvas = await html2canvas(getEl("capture"), {
             scale: 2, useCORS: true, backgroundColor: "#F2F5F8", width: 1800, 
-            onclone: (clonedDoc) => {
-                clonedDoc.getElementById('adminPanel').style.display = 'none';
-                clonedDoc.getElementById('step9-container').style.display = 'none';
-                clonedDoc.querySelectorAll('.record-card-desc').forEach(el => el.style.display = 'none');
-                const clonedCapture = clonedDoc.getElementById('capture');
-                clonedCapture.style.width = '1800px'; clonedCapture.style.padding = '0px'; 
-                const title = clonedDoc.getElementById('mainTitle');
-                const titleDiv = clonedDoc.createElement('div');
-                titleDiv.innerText = title.value || "나의 마음 탐구 기록";
-                titleDiv.style.cssText = "font-size:75px; font-weight:900; color:#003366; text-align:center; margin-bottom:60px; padding:30px; border-bottom:8px solid #003366;";
-                title.replaceWith(titleDiv);
-                clonedDoc.querySelectorAll('textarea, .editable-list').forEach(ta => {
-                    const originalTextContent = (ta.tagName === "TEXTAREA" ? ta.value : ta.innerText).trim();
-                    const d = clonedDoc.createElement('div');
+            onclone: (doc) => {
+                doc.getElementById('adminPanel').style.display = 'none'; 
+                
+                // 이미지 공유 시 체크박스 숨김 처리
+                const toggleLabel = doc.getElementById('toggle-judgment-label');
+                if (toggleLabel) toggleLabel.style.display = 'none';
+
+                doc.querySelectorAll('.record-card-desc').forEach(el => el.style.display = 'none');
+                doc.getElementById('capture').style.cssText = 'width:1800px; padding:0;';
+                
+                const title = doc.getElementById('mainTitle'), div = doc.createElement('div');
+                div.innerText = title.value || "나의 마음 탐구 기록";
+                div.style.cssText = "font-size:75px; font-weight:900; color:#003366; text-align:center; margin-bottom:60px; padding:30px; border-bottom:8px solid #003366;";
+                title.replaceWith(div);
+                
+                doc.querySelectorAll('textarea, .editable-list').forEach(ta => {
+                    const txt = (ta.tagName === "TEXTAREA" ? ta.value : ta.innerText).trim(), d = doc.createElement('div');
                     d.style.cssText = "background:white; border:1px solid #dce4ee; padding:40px; border-radius:20px; font-size:48px; line-height:1.7; color:#2c3e50; white-space:pre-wrap; margin-top:15px;";
-                    if (originalTextContent) {
-                        const lines = originalTextContent.split('\n');
-                        const bulletedHTML = lines.map((line, index) => {
-                            const trimmed = line.trim();
-                            if (!trimmed) return '<div style="height: 0.8em;"></div>';
-                            let content = trimmed;
-                            if (!trimmed.startsWith('•') && !trimmed.startsWith('-') && !trimmed.startsWith('*')) content = `• ${trimmed}`;
-                            const isLastLine = index === lines.length - 1;
-                            const borderStyle = isLastLine ? "" : "border-bottom: 2px dashed #cbd6e2; padding-bottom: 25px; margin-bottom: 25px;";
-                            return `<div style="padding-left: 1.4em; text-indent: -0.7em; word-break: break-all; ${borderStyle}">${content}</div>`;
+                    
+                    if (txt) {
+                        d.innerHTML = txt.split('\n').map((l, i, a) => {
+                            let t = l.trim(); 
+                            if (!t) return '<div style="height: 0.8em;"></div>';
+                            const shouldAddBullet = !t.startsWith('•') && !t.startsWith('-') && !t.startsWith('*') && !t.match(/^[①②③]/);
+                            t = t.replace(/\(([^)]+)\)/g, '<span style="color: #007AFF; font-weight: normal;">($1)</span>');
+                            const indentStyle = 'padding-left:1.4em; text-indent:-0.7em;';
+                            return `<div style="${indentStyle} word-break:break-all; ${i === a.length - 1 ? "" : "border-bottom:2px dashed #cbd6e2; padding-bottom:25px; margin-bottom:25px;"}">${shouldAddBullet ? '• ' : ''}${t}</div>`;
                         }).join('');
-                        d.innerHTML = bulletedHTML;
                     } else { d.innerText = "기록된 내용이 없습니다."; d.style.color = "#ccc"; }
                     ta.replaceWith(d);
                 });
-                clonedDoc.querySelectorAll('.record-card-title').forEach(el => {
-                    el.style.fontSize = '45px'; el.style.marginBottom = '15px'; el.style.color = '#007AFF';
-                });
+                doc.querySelectorAll('.record-card-title').forEach(el => el.style.cssText = 'font-size:45px; margin-bottom:15px; color:#007AFF;');
+                doc.querySelectorAll('.badge').forEach(b => { b.style.cssText += "padding: 10px 15px; font-size: 30px; border-radius: 12px; margin-right: 15px; display:inline-block;"; });
+                doc.querySelectorAll('[style*="font-size: 0.85rem;"]').forEach(e => { e.style.fontSize = "38px"; e.style.marginBottom = "20px"; });
             }
         });
-        canvas.toBlob(async (blob) => {
-            const file = new File([blob], "mind_diary.png", { type: "image/png" });
-            if (navigator.share && navigator.canShare && navigator.canShare({ files: [file] })) {
-                await navigator.share({ files: [file] });
-            } else { 
-                document.getElementById("previewImg").src = canvas.toDataURL(); 
-                document.getElementById("previewBox").style.display = "flex"; 
-            }
-            shareBtn.disabled = false; shareBtn.innerText = "❤️ 이미지 공유";
+
+        await new Promise((resolve, reject) => {
+            canvas.toBlob(async (blob) => {
+                if (!blob) { reject(new Error("이미지 생성 실패")); return; }
+                try {
+                    const file = new File([blob], "mind_diary.png", { type: "image/png" });
+                    if (navigator.canShare && navigator.canShare({ files: [file] })) {
+                        await navigator.share({ files: [file] });
+                    } else {
+                        getEl("previewImg").src = canvas.toDataURL();
+                        getEl("previewBox").style.display = "flex";
+                    }
+                    resolve();
+                } catch (shareError) { console.warn("공유 취소 또는 에러:", shareError); resolve(); }
+            }, "image/png");
         });
-    } catch (e) { shareBtn.disabled = false; shareBtn.innerText = "실패"; }
+    } catch (e) {
+        console.error("이미지 생성 중 오류:", e); alert("이미지 생성 및 공유 중 오류가 발생했습니다.");
+    } finally { btn.disabled = false; btn.innerText = "❤️ 이미지 공유"; }
 }
 
-function togglestep9() { 
-    const c = document.getElementById('step9-content'); 
-    const icon = document.getElementById('toggle-icon');
-    if (c.style.display === 'none') {
-        c.style.display = 'block';
-        icon.innerText = '▼';
+function closePreview() { getEl("previewBox").style.display = "none"; }
+
+function toggleJudgmentFields() {
+    const container = getEl("judgment-fields-container");
+    const checkbox = getEl("toggle-judgment-checkbox");
+    if (!container || !checkbox) return;
+
+    if (checkbox.checked) {
+        container.style.display = "none";
+        localStorage.setItem("mindApp_hide_judgment", "true");
     } else {
-        c.style.display = 'none';
-        icon.innerText = '▲';
+        container.style.display = "block";
+        localStorage.setItem("mindApp_hide_judgment", "false");
     }
-}
-function closePreview() { document.getElementById("previewBox").style.display = "none"; }
-
-function copyQ1() {
-    const s1 = document.getElementById('step1').value;
-    const q1 = document.getElementById('step9').value;
-    const combinedText = `[나의 마음 관찰 기록 - 공감 모드]\n1. 사건: ${s1}\n\n[Gemini에게 보내는 질문]\n${q1}`;
-    navigator.clipboard.writeText(combinedText).then(() => {
-        alert("사건과 질문1이 복사되었습니다!");
-    }).catch(err => { alert("복사 실패"); });
-}
-
-function copyQ2() {
-    const s1 = document.getElementById('step1').value;
-    const s2 = document.getElementById('step2').value;
-    const s3 = document.getElementById('step3').innerText;
-    const s4 = document.getElementById('step4').value;
-    const s5 = document.getElementById('step5').innerText;
-    const s6 = document.getElementById('step6').innerText;
-    const q2 = document.getElementById('step9_extra').value;
-
-    const combinedText = `[나의 마음 관찰 기록 - 성찰 모드]\n1. 사건: ${s1}\n2. 감정: ${s2}\n3. 생각(판단): ${s3}\n4. 핵심 욕구: ${s4}\n5. 욕구 이유: ${s5}\n6. 행동 실천: ${s6}\n\n[Gemini에게 보내는 질문]\n${q2}`;
-    navigator.clipboard.writeText(combinedText).then(() => {
-        alert("1~6번 전체 기록과 질문2가 복사되었습니다!");
-    }).catch(err => { alert("복사 실패"); });
 }
 
 window.onload = function() {
-    renderUserList();
-    const lastUser = localStorage.getItem("lastSelectedUser");
-    renderUserList(lastUser);
+    renderUserList(localStorage.getItem("lastSelectedUser"));
     
     document.querySelectorAll("textarea").forEach(ta => {
-        ta.addEventListener("input", (e) => {
-            autoResizeTextarea(e.target); 
-            saveAllToLocal();
-            if(e.target.id === 'step1') updateContextDisplay(e.target.value);
-        });
+        ta.addEventListener("input", (e) => { autoResizeTextarea(e.target); saveAllToLocal(); if(e.target.id === 'step1') updateContextDisplay(e.target.value); });
         setTimeout(() => autoResizeTextarea(ta), 200); 
     });
+    getEl("record-section").addEventListener("input", e => { if(e.target.classList.contains('editable-list') || e.target.id === 'mainTitle' || e.target.id === 'step7') saveAllToLocal(); });
 
-    [3, 5, 6].forEach(i => {
-        const el = document.getElementById("step" + i);
-        if(el) el.addEventListener("input", saveAllToLocal);
-    });
+// 🟢 새로고침 시 판단창(상대/나) 숨기기 상태 복구 (기본값이 숨기기)
+    const hideJudgment = localStorage.getItem("mindApp_hide_judgment");
+    const checkbox = getEl("toggle-judgment-checkbox");
+    const container = getEl("judgment-fields-container");
     
-    document.getElementById("step7").addEventListener("input", saveAllToLocal);
-    document.getElementById("step8").addEventListener("input", saveAllToLocal);
-    document.getElementById("step9_extra").addEventListener("input", saveAllToLocal);
-    document.getElementById("mainTitle").addEventListener("input", saveAllToLocal);
-    
-    loadStep9Global();
+    // 명시적으로 '보이기(false)'로 설정한 적이 있을 때만 보여줍니다.
+    if (hideJudgment === "false") {
+        if (checkbox) checkbox.checked = true;
+        if (container) container.style.display = "block";
+    } else {
+        if (checkbox) checkbox.checked = true;
+        if (container) container.style.display = "none";
+    }
 };
 </script>
 </body>
